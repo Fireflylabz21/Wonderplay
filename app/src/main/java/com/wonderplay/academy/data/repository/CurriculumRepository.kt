@@ -7,12 +7,189 @@ object CurriculumRepository {
     val phases = mapOf(
         "phase1" to CurriculumPhase(
             id = "phase1",
-            title = "Phase 1: Explorers (Ages 2-3)",
+            title = "Age 1–2: Toddlers (Early Sensory & Object Recognition)",
             categories = listOf(
                 CurriculumCategory(
-                    id = "abc",
-                    name = "Alphabet & Sounds (A-Z)",
+                    id = "toddler_words",
+                    name = "First Words & Daily Objects",
                     items = listOf(
+                        FlashcardItem("Cup", "Drinking Cup", "k-uh-p", "🥤", "Cup for drinking water and milk."),
+                        FlashcardItem("Ball", "Play Ball", "b-aw-l", "⚽", "Ball for rolling and playing."),
+                        FlashcardItem("Shoes", "Little Shoes", "sh-oo-z", "👟", "Shoes for walking outside."),
+                        FlashcardItem("Bed", "Bedtime Bed", "b-eh-d", "🛏️", "Bed for cozy sleeping."),
+                        FlashcardItem("Bottle", "Milk Bottle", "b-ot-l", "🍼", "Bottle for milk and water."),
+                        FlashcardItem("Spoon", "Feeding Spoon", "s-p-oo-n", "🥄", "Spoon for yummy meals."),
+                        FlashcardItem("Car", "Toy Car", "k-ah-r", "🚗", "Car going beep beep.")
+                    )
+                ),
+                CurriculumCategory(
+                    id = "toddler_animals",
+                    name = "Animals & Sound Matching",
+                    items = listOf(
+                        FlashcardItem("Cow", "Farm Cow", "k-ow", "🐄", "Cow says Moo Moo!"),
+                        FlashcardItem("Dog", "Puppy Dog", "d-o-g", "🐶", "Dog says Woof Woof!"),
+                        FlashcardItem("Cat", "Kitty Cat", "k-a-t", "🐱", "Cat says Meow Meow!"),
+                        FlashcardItem("Lion", "Zoo Lion", "l-eye-on", "🦁", "Lion says Roar!"),
+                        FlashcardItem("Elephant", "Big Elephant", "el-uh-funt", "🐘", "Elephant makes trumpet sounds!")
+                    )
+                ),
+                CurriculumCategory(
+                    id = "toddler_colors",
+                    name = "Basic Colors",
+                    items = listOf(
+                        FlashcardItem("Red", "Red Color", "r-eh-d", "🔴", "Bright Red like a strawberry."),
+                        FlashcardItem("Blue", "Blue Color", "b-l-oo", "🔵", "Clear Blue like the sky."),
+                        FlashcardItem("Yellow", "Yellow Color", "y-el-oh", "🟡", "Sunny Yellow like a banana."),
+                        FlashcardItem("Green", "Green Color", "g-r-ee-n", "🟢", "Fresh Green like leaf grass.")
+                    )
+                ),
+                CurriculumCategory(
+                    id = "toddler_body",
+                    name = "Body Parts",
+                    items = listOf(
+                        FlashcardItem("Eyes", "Seeing Eyes", "eye-z", "👀", "Eyes to see wonderful things."),
+                        FlashcardItem("Nose", "Smelling Nose", "n-oh-z", "👃", "Nose to smell flowers."),
+                        FlashcardItem("Hands", "Clapping Hands", "h-and-z", "🤲", "Hands to clap and hug."),
+                        FlashcardItem("Feet", "Walking Feet", "f-ee-t", "👣", "Feet to walk and jump."),
+                        FlashcardItem("Ears", "Listening Ears", "ee-r-z", "👂", "Ears to hear sweet music."),
+                        FlashcardItem("Mouth", "Smiling Mouth", "m-ow-th", "👄", "Mouth to smile and eat.")
+                    )
+                ),
+                CurriculumCategory(
+                    id = "toddler_family",
+                    name = "Family & People",
+                    items = listOf(
+                        FlashcardItem("Mommy", "Loving Mommy", "m-om-ee", "👩", "Mommy gives warm hugs."),
+                        FlashcardItem("Daddy", "Caring Daddy", "d-ad-ee", "👨", "Daddy plays games with me."),
+                        FlashcardItem("Baby", "Happy Baby", "b-ay-bee", "👶", "Baby giggles and smiles."),
+                        FlashcardItem("Grandma", "Sweet Grandma", "g-ran-mah", "👵", "Grandma tells nice stories."),
+                        FlashcardItem("Grandpa", "Kind Grandpa", "g-ran-pah", "👴", "Grandpa takes me on walks."),
+                        FlashcardItem("Doctor", "Helping Doctor", "d-ok-ter", "🩺", "Doctor keeps us healthy and strong.")
+                    )
+                ),
+                CurriculumCategory(
+                    id = "toddler_actions",
+                    name = "Simple Actions & Verbs",
+                    items = listOf(
+                        FlashcardItem("Eat", "Yummy Food", "ee-t", "🍲", "Eat healthy food every day."),
+                        FlashcardItem("Sleep", "Good Night", "s-l-ee-p", "😴", "Sleep tight to grow big and strong."),
+                        FlashcardItem("Run", "Fast Running", "r-u-n", "🏃", "Run around and play outside."),
+                        FlashcardItem("Jump", "High Jump", "j-u-m-p", "🦘", "Jump up high in the air."),
+                        FlashcardItem("Wave", "Friendly Wave", "w-ay-v", "👋", "Wave hello and goodbye."),
+                        FlashcardItem("Wash", "Clean Hands", "w-o-sh", "🧼", "Wash hands before meals.")
+                    )
+                )
+            )
+        ),
+        "phase2" to CurriculumPhase(
+            id = "phase2",
+            title = "Age 3–4: Preschoolers (Conceptual & Foundational Literacy/Math)",
+            categories = listOf(
+                CurriculumCategory(
+                    id = "preschool_alpha",
+                    name = "Alphabet & Phonics",
+                    items = listOf(
+                        FlashcardItem("A / a", "Apple", "æ - /æ/", "🍎", "A is for Apple, sound /æ/."),
+                        FlashcardItem("B / b", "Ball", "b - /b/", "⚽", "B is for Ball, sound /b/."),
+                        FlashcardItem("C / c", "Cat", "k - /k/", "🐱", "C is for Cat, sound /k/."),
+                        FlashcardItem("D / d", "Dog", "d - /d/", "🐶", "D is for Dog, sound /d/."),
+                        FlashcardItem("E / e", "Elephant", "e - /ɛ/", "🐘", "E is for Elephant, sound /ɛ/.")
+                    )
+                ),
+                CurriculumCategory(
+                    id = "preschool_math",
+                    name = "Early Math & Numbers 1–20",
+                    items = listOf(
+                        FlashcardItem("1–5", "Numbers One to Five", "1 to 5", "🔢", "Counting 1, 2, 3, 4, 5."),
+                        FlashcardItem("6–10", "Numbers Six to Ten", "6 to 10", "🔢", "Counting 6, 7, 8, 9, 10."),
+                        FlashcardItem("11–20", "Numbers Eleven to Twenty", "11 to 20", "🔢", "Counting up to twenty!"),
+                        FlashcardItem("2D Shapes", "Circle, Square, Triangle, Star", "shapes", "🔷", "Basic 2D shapes: Circle, square, triangle, star, heart, oval."),
+                        FlashcardItem("Opposites", "Big / Small, Tall / Short", "opposites", "⚖️", "Size & Opposites: Big/Small, Tall/Short, In/Out, Hot/Cold.")
+                    )
+                ),
+                CurriculumCategory(
+                    id = "preschool_world",
+                    name = "World Around Us & SEL",
+                    items = listOf(
+                        FlashcardItem("Vehicles", "Fire truck, Airplane, Train", "transport", "🚒", "Vehicles & Transport: Fire truck, airplane, train, bicycle."),
+                        FlashcardItem("Nutrition", "Fruits, Veggies, Snacks", "food", "🥗", "Food & Nutrition: Healthy snacks and fresh fruits."),
+                        FlashcardItem("Weather", "Sun, Rain, Snow, Seasons", "weather", "🌦️", "Weather & Seasons: Spring, Summer, Autumn, Winter."),
+                        FlashcardItem("Emotions", "Happy, Sad, Angry, Surprised", "sel", "😊", "Social-Emotional Learning: Basic emotions and self-awareness."),
+                        FlashcardItem("Manners", "Please, Thank You, Routines", "manners", "🤝", "Manners & Routines: Sharing and brushing teeth.")
+                    )
+                )
+            )
+        ),
+        "phase3" to CurriculumPhase(
+            id = "phase3",
+            title = "Age 5–6: Kindergarteners (Early Literacy, Math & Science Exploration)",
+            categories = listOf(
+                CurriculumCategory(
+                    id = "kinder_literacy",
+                    name = "Literacy & Phonics",
+                    items = listOf(
+                        FlashcardItem("Sight Words", "The, And, Was, For", "sight words", "📖", "High-Frequency Sight Words (Dolch / Fry lists)."),
+                        FlashcardItem("CVC Words", "Cat, Dog, Pin, Sun", "cvc", "📝", "CVC Words (Consonant-Vowel-Consonant)."),
+                        FlashcardItem("Rhyming", "Cat/Hat, Sun/Fun", "rhyme", "🎵", "Rhyming Words and sound patterns."),
+                        FlashcardItem("Compound", "Sun + Flower = Sunflower", "compound", "🌻", "Simple Compound Words formation.")
+                    )
+                ),
+                CurriculumCategory(
+                    id = "kinder_math",
+                    name = "Elementary Math & Time",
+                    items = listOf(
+                        FlashcardItem("1 to 100", "Counting & 2s, 5s, 10s", "skip count", "💯", "Numbers 1–100 & Counting by 2s, 5s, 10s."),
+                        FlashcardItem("Addition", "Visual Equations (🍎 + 🍎)", "math +", "➕", "Basic Addition & Subtraction equations."),
+                        FlashcardItem("3D Shapes", "Sphere, Cube, Cylinder, Cone", "3d shapes", "🧊", "Solid 3D geometric shapes."),
+                        FlashcardItem("Time & Money", "Clock faces & Coins", "clock", "⏰", "Time & Money Basics: Clock faces (hourly), coins/bills.")
+                    )
+                ),
+                CurriculumCategory(
+                    id = "kinder_science",
+                    name = "Science, Nature & Social Studies",
+                    items = listOf(
+                        FlashcardItem("Solar System", "Sun, Moon, Earth, Mars", "space", "🪐", "Solar System & Planets: Sun, Moon, Earth, Mars, Stars."),
+                        FlashcardItem("Life Cycles", "Butterfly, Frog, Plant", "lifecycle", "🐛", "Life Cycles: Butterfly, frog, plant growth."),
+                        FlashcardItem("Habitats", "Ocean, Jungle, Desert, Forest", "habitat", "🌴", "Habitats and Ecosystems."),
+                        FlashcardItem("Community", "Police, Firefighter, Teacher", "helpers", "👩‍🏫", "Community Helpers: Police officer, firefighter, teacher, chef.")
+                    )
+                )
+            )
+        ),
+        "phase4" to CurriculumPhase(
+            id = "phase4",
+            title = "Age 7–9: Early Elementary (Subject Mastery & Critical Thinking)",
+            categories = listOf(
+                CurriculumCategory(
+                    id = "elem_grammar",
+                    name = "Language Arts & Grammar",
+                    items = listOf(
+                        FlashcardItem("Parts of Speech", "Nouns, Verbs, Adjectives, Adverbs", "grammar", "📚", "Parts of Speech: Nouns, Verbs, Adjectives, Adverbs."),
+                        FlashcardItem("Word Study", "Homophones, Synonyms, Antonyms", "vocab", "🔤", "Homophones & Synonyms/Antonyms (Their/There/They're)."),
+                        FlashcardItem("Roots", "Prefix & Suffix (Un-, Re-, -ful)", "morphology", "🌿", "Prefix & Suffix Root Words.")
+                    )
+                ),
+                CurriculumCategory(
+                    id = "elem_math",
+                    name = "Advanced Math & Measurement",
+                    items = listOf(
+                        FlashcardItem("Multiplication", "Tables 1 to 12", "times", "✖️", "Multiplication Tables (1 to 12)."),
+                        FlashcardItem("Division & Fractions", "1/2, 1/4, 3/4 visual representations", "fractions", "🥧", "Basic Division & Fractions."),
+                        FlashcardItem("Measurement", "Length, Weight, Volume units", "units", "📏", "Measurement Units: Length (cm/in), Weight (kg/lb), Volume.")
+                    )
+                ),
+                CurriculumCategory(
+                    id = "elem_stem",
+                    name = "STEM, Geography & Zoology",
+                    items = listOf(
+                        FlashcardItem("Human Body", "Skeletal, Digestive, Respiratory", "anatomy", "🦴", "Human Body Systems and Organs."),
+                        FlashcardItem("Geography", "World Capitals & Continents", "earth", "🌍", "Geography & Flags: Capitals, continents, landmarks."),
+                        FlashcardItem("Matter & Animals", "States of Matter & Classification", "science", "🔬", "States of Matter & Animal Classification (Mammals, reptiles).")
+                    )
+                )
+            )
+        )
+    )
                         FlashcardItem("A", "Apple", "ah - /æ/", "🍎", "A for Apple! Crisp, red, and juicy."),
                         FlashcardItem("B", "Ball", "buh - /b/", "⚽", "B for Ball! Bouncing round and high."),
                         FlashcardItem("C", "Cat", "kuh - /k/", "🐱", "C for Cat! Soft kitty says Meow."),
