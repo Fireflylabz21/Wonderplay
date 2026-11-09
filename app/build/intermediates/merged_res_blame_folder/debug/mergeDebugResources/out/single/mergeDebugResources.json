@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.10.2\\com.wonderplay.academy.app-debug-52:\\drawable_rose_avatar.png.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.10.2\\com.wonderplay.academy.app-main-54:\\drawable\\rose_avatar.png"
+    },
+    {
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.10.2\\com.wonderplay.academy.app-debug-52:\\drawable_arun_avatar.png.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.10.2\\com.wonderplay.academy.app-main-54:\\drawable\\arun_avatar.png"
+    },
+    {
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.10.2\\com.wonderplay.academy.app-debug-52:\\drawable_arunesh_fullavatar.png.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.10.2\\com.wonderplay.academy.app-main-54:\\drawable\\arunesh_fullavatar.png"
+    },
+    {
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.10.2\\com.wonderplay.academy.app-debug-52:\\drawable_arunesh.jpg.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.10.2\\com.wonderplay.academy.app-main-54:\\drawable\\arunesh.jpg"
+    },
+    {
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.10.2\\com.wonderplay.academy.app-debug-52:\\drawable_arunesh_avatar.png.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.10.2\\com.wonderplay.academy.app-main-54:\\drawable\\arunesh_avatar.png"
+    },
+    {
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.10.2\\com.wonderplay.academy.app-debug-52:\\drawable_teju_avatar.png.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.10.2\\com.wonderplay.academy.app-main-54:\\drawable\\teju_avatar.png"
+    }
+]

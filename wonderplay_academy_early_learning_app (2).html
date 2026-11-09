@@ -1,0 +1,3136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>WonderPlay Academy - Mobile Learning App</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Literacy-Optimized Kid Font: Andika -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <!-- Confetti Particle Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            andika: ['Andika', 'sans-serif'],
+          },
+          colors: {
+            brandYellow: '#FFDE59',
+            brandBlue: '#48DBFB',
+            brandGreen: '#1DD1A1',
+            brandPink: '#FF6B81',
+            brandPurple: '#9B59B6',
+            brandOrange: '#FF9F43',
+            mobileBg: '#F8FAFC',
+          },
+          boxShadow: {
+            'phone': '0 25px 60px -15px rgba(0, 0, 0, 0.35)',
+            'kid-btn': '0 5px 0px 0px rgba(0, 0, 0, 0.12)',
+            'kid-btn-active': '0 1px 0px 0px rgba(0, 0, 0, 0.12)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      touch-action: manipulation;
+      font-family: 'Andika', sans-serif !important;
+    }
+    body {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    
+    /* Native App Frame styling */
+    #mobileAppShell {
+      width: 100%;
+      max-width: 420px;
+      height: 100vh;
+      max-height: 890px;
+      background-color: #F9F8F3;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 65px -15px rgba(15, 23, 42, 0.55);
+      transition: background-color 0.45s ease, border-color 0.45s ease;
+    }
+
+    @media (min-width: 640px) {
+      #mobileAppShell {
+        height: 94vh;
+        border-radius: 46px;
+        border: 9px solid #0f172a;
+      }
+    }
+
+    /* Springy tap effect for kids */
+    .mobile-touch-bounce {
+      transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease;
+    }
+    .mobile-touch-bounce:active {
+      transform: scale(0.93) translateY(2px);
+    }
+
+    /* Tactile 3D Button styling */
+    .kid-card-3d {
+      box-shadow: 0 6px 0px 0px rgba(0, 0, 0, 0.08);
+      transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .kid-card-3d:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0px 0px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Momentum smooth scrolling for app view */
+    .mobile-scroll-container {
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .mobile-scroll-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Gentle pulsing */
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .pulse-glow {
+      animation: pulseGlow 2.4s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MOBILE SHELL CONTAINER -->
+  <div id="mobileAppShell" class="flex flex-col w-full h-full justify-between">
+    
+    <!-- 1. MOBILE STATUS BAR (Clock, Battery, Dynamic Notch) -->
+    <div id="mobileStatusBar" class="w-full pt-3 px-6 pb-2 flex items-center justify-between text-slate-800 text-xs font-bold z-40 bg-[#F9F8F3]/95 backdrop-blur-md select-none shrink-0 border-b border-amber-200/50 transition-colors duration-300">
+      <span id="mobileStatusBarClock" class="font-bold tracking-tight">9:41</span>
+      
+      <!-- Dynamic Island / Speaker Pill -->
+      <div class="h-4 w-28 bg-slate-900 rounded-full flex items-center justify-center gap-1.5 shadow-inner px-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-[9px] text-amber-200 tracking-wider font-bold">WONDERPLAY</span>
+      </div>
+
+      <div class="flex items-center gap-1.5">
+        <i class="fa-solid fa-wifi text-[11px] text-slate-600"></i>
+        <i class="fa-solid fa-battery-full text-[13px] text-emerald-500"></i>
+      </div>
+    </div>
+
+    <!-- 2. MOBILE APP HEADER -->
+    <header id="mobileAppHeader" class="px-4 py-2.5 flex items-center justify-between z-30 bg-[#F9F8F3]/95 backdrop-blur-md border-b-2 border-amber-200/70 shrink-0 transition-colors duration-300">
+      <!-- Kid Profile & Star counter -->
+      <div class="flex items-center gap-2.5">
+        <button onclick="openAvatarSelector()" class="relative mobile-touch-bounce">
+          <div id="currentAvatarDisplay" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-300 to-amber-100 flex items-center justify-center text-2xl shadow-sm border-2 border-amber-300">
+            🦁
+          </div>
+          <span class="absolute -bottom-1 -right-1 bg-emerald-500 w-3.5 h-3.5 rounded-full border-2 border-white"></span>
+        </button>
+
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 id="kidNameTag" class="text-base font-bold text-slate-800 leading-tight">Leo</h1>
+          </div>
+          <!-- Stars counter -->
+          <div class="flex items-center gap-1 text-xs text-amber-500 font-bold">
+            <i class="fa-solid fa-star"></i>
+            <span id="starCounter" class="text-slate-800 font-bold">24</span>
+            <span class="text-[11px] text-slate-400 font-normal ml-0.5">Stars</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Controls: Theme Switcher, Age Filter Dropdown & Adults Gate -->
+      <div class="flex items-center gap-1.5 relative">
+        <!-- Theme Picker Button -->
+        <button id="themePickerBtn" onclick="openThemeModal()" class="px-2.5 py-1.5 rounded-2xl bg-white border-2 border-slate-300 text-slate-800 font-bold text-xs flex items-center gap-1.5 mobile-touch-bounce shadow-xs" title="Change Theme Skin">
+          <span id="currentThemeIcon">🦁</span>
+          <span class="text-[11px] hidden sm:inline" id="currentThemeLabel">Safari</span>
+        </button>
+
+        <!-- Age Filter Dropdown Trigger Button -->
+        <button id="ageFilterBtn" onclick="toggleAgeDropdown()" class="px-2.5 py-1.5 rounded-2xl bg-amber-100/90 border-2 border-amber-300 text-amber-950 font-bold text-xs flex items-center gap-1.5 mobile-touch-bounce shadow-xs">
+          <span id="currentAgeIcon">🌱</span>
+          <span id="currentAgeLabel" class="text-[11px]">2-3y</span>
+          <i id="ageDropdownChevron" class="fa-solid fa-chevron-down text-[10px] text-amber-800 transition-transform duration-200"></i>
+        </button>
+
+        <!-- Dynamic Floating Age Filter Dropdown Menu -->
+        <div id="ageFilterDropdown" class="absolute top-11 left-0 bg-white rounded-2xl shadow-xl border-2 border-amber-300 p-1.5 w-44 z-50 hidden transition-all">
+          <div class="text-[10px] uppercase font-bold text-slate-400 px-2 py-1">Select Age Stage</div>
+          <button onclick="selectPhaseFromDropdown('phase1')" id="drop-phase1" class="w-full text-left px-2.5 py-2 rounded-xl text-xs font-bold flex items-center justify-between transition bg-amber-100 text-amber-950 my-0.5">
+            <span class="flex items-center gap-2"><span>🌱</span> <span>Ages 2-3</span></span>
+            <i class="fa-solid fa-check text-[11px] text-amber-700"></i>
+          </button>
+          <button onclick="selectPhaseFromDropdown('phase2')" id="drop-phase2" class="w-full text-left px-2.5 py-2 rounded-xl text-xs font-bold flex items-center justify-between transition hover:bg-slate-100 text-slate-700 my-0.5">
+            <span class="flex items-center gap-2"><span>🎨</span> <span>Ages 4-5</span></span>
+            <i class="fa-solid fa-check text-[11px] text-emerald-600 hidden"></i>
+          </button>
+          <button onclick="selectPhaseFromDropdown('phase3')" id="drop-phase3" class="w-full text-left px-2.5 py-2 rounded-xl text-xs font-bold flex items-center justify-between transition hover:bg-slate-100 text-slate-700 my-0.5">
+            <span class="flex items-center gap-2"><span>🚀</span> <span>Ages 6-7</span></span>
+            <i class="fa-solid fa-check text-[11px] text-emerald-600 hidden"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 4. DYNAMIC SCROLLABLE APP VIEWPORT -->
+    <main id="appViewport" class="flex-1 overflow-y-auto mobile-scroll-container p-3.5 space-y-3 z-10 pb-6 bg-[#F9F8F3]">
+      <!-- Injected dynamically via JavaScript tabs -->
+    </main>
+
+    <!-- 5. NATIVE MOBILE BOTTOM NAVIGATION DOCK -->
+    <nav id="mobileBottomNav" class="w-full bg-[#F9F8F3]/95 backdrop-blur-md border-t-2 border-amber-200 px-3 py-2 z-30 shrink-0 shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
+      <div class="flex items-center justify-between max-w-sm mx-auto">
+        
+        <!-- Tab 1: Cards -->
+        <button onclick="switchTab('flashcards')" id="tab-flashcards" class="dock-btn flex-1 flex flex-col items-center py-1 rounded-2xl transition text-amber-950 bg-amber-200/90 font-bold mobile-touch-bounce">
+          <span class="text-xl">🔤</span>
+          <span class="text-[11px] font-bold mt-0.5">Cards</span>
+        </button>
+
+        <!-- Tab 2: Stories -->
+        <button onclick="switchTab('stories')" id="tab-stories" class="dock-btn flex-1 flex flex-col items-center py-1 rounded-2xl transition text-slate-400 font-bold mobile-touch-bounce">
+          <span class="text-xl">📖</span>
+          <span class="text-[11px] font-bold mt-0.5">Stories</span>
+        </button>
+
+        <!-- Tab 3: Play & Quiz -->
+        <button onclick="switchTab('games')" id="tab-games" class="dock-btn flex-1 flex flex-col items-center py-1 rounded-2xl transition text-slate-400 font-bold mobile-touch-bounce">
+          <span class="text-xl">🎯</span>
+          <span class="text-[11px] font-bold mt-0.5">Games</span>
+        </button>
+
+        <!-- Tab 4: Music -->
+        <button onclick="switchTab('music')" id="tab-music" class="dock-btn flex-1 flex flex-col items-center py-1 rounded-2xl transition text-slate-400 font-bold mobile-touch-bounce">
+          <span class="text-xl">🎵</span>
+          <span class="text-[11px] font-bold mt-0.5">Melody</span>
+        </button>
+
+        <!-- Tab 5: Rhymes Karaoke -->
+        <button onclick="switchTab('rhymes')" id="tab-rhymes" class="dock-btn flex-1 flex flex-col items-center py-1 rounded-2xl transition text-slate-400 font-bold mobile-touch-bounce">
+          <span class="text-xl">🎤</span>
+          <span class="text-[11px] font-bold mt-0.5">Rhymes</span>
+        </button>
+
+        <!-- Tab 6: Habits -->
+        <button onclick="switchTab('habits')" id="tab-habits" class="dock-btn flex-1 flex flex-col items-center py-1 rounded-2xl transition text-slate-400 font-bold mobile-touch-bounce">
+          <span class="text-xl">⭐</span>
+          <span class="text-[11px] font-bold mt-0.5">Habits</span>
+        </button>
+
+      </div>
+      <!-- iOS Home Bar Indicator -->
+      <div class="w-32 h-1 bg-slate-300 rounded-full mx-auto mt-2"></div>
+    </nav>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MOBILE BOTTOM SHEET MODALS -->
+  <!-- ========================================== -->
+
+  <!-- MODAL: PARENT SECURITY BOTTOM SHEET -->
+  <div id="parentLockModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end justify-center hidden">
+    <div class="bg-white rounded-t-3xl max-w-[420px] w-full p-6 shadow-2xl border-t-4 border-rose-300">
+      <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-4"></div>
+      
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🛡️</span>
+          <h3 class="text-lg font-bold text-slate-800">Adult Verification Gate</h3>
+        </div>
+        <button onclick="closeParentModal()" class="text-slate-400 hover:text-slate-600 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      
+      <p class="text-xs text-slate-500 mb-4">Solve this simple question to access screen-time limits & developmental curriculum:</p>
+
+      <div class="bg-rose-50 p-4 rounded-2xl text-center border-2 border-rose-200 mb-4">
+        <span class="text-xs font-bold text-rose-700">Calculate:</span>
+        <div id="parentMathChallenge" class="text-2xl font-bold text-rose-600 my-1">6 + 7 = ?</div>
+      </div>
+
+      <input type="number" id="parentMathAnswer" placeholder="Enter answer..." class="w-full text-center text-xl font-bold py-3 px-4 rounded-2xl border-2 border-slate-300 focus:outline-none focus:border-rose-400 mb-3">
+
+      <button onclick="verifyParentPin()" class="w-full py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-2xl mobile-touch-bounce shadow-md">
+        Unlock Dashboard
+      </button>
+      <div id="parentGateError" class="text-rose-500 text-xs font-bold text-center mt-2 hidden">Incorrect answer, please try again!</div>
+    </div>
+  </div>
+
+  <!-- MODAL: PARENT DASHBOARD & COPPA CONTROLS -->
+  <div id="parentDashboardModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-end justify-center hidden">
+    <div class="bg-white rounded-t-3xl max-w-[420px] w-full p-5 shadow-2xl border-t-4 border-indigo-400 max-h-[85vh] overflow-y-auto mobile-scroll-container">
+      <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-3"></div>
+
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">⚙️</span>
+          <div>
+            <h2 class="text-lg font-bold text-slate-800 leading-tight">Curriculum & Safety</h2>
+            <span class="text-[11px] text-slate-400">Child Development Framework</span>
+          </div>
+        </div>
+        <button onclick="closeParentDashboard()" class="text-slate-400 text-xl">
+          <i class="fa-solid fa-circle-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Tab Strip inside Parent Hub -->
+      <div class="flex border-b border-slate-200 mb-4 gap-2 text-xs font-bold">
+        <button onclick="switchParentTab('curriculum')" id="pTab-curriculum" class="text-indigo-600 border-b-2 border-indigo-600 pb-1.5 flex-1">Curriculum</button>
+        <button onclick="switchParentTab('themes')" id="pTab-themes" class="text-slate-400 pb-1.5 flex-1">UI Themes</button>
+        <button onclick="switchParentTab('screentime')" id="pTab-screentime" class="text-slate-400 pb-1.5 flex-1">Screen Timer</button>
+        <button onclick="switchParentTab('insights')" id="pTab-insights" class="text-slate-400 pb-1.5 flex-1">Progress</button>
+      </div>
+
+      <!-- Tab Content: Curriculum -->
+      <div id="parentView-curriculum" class="space-y-3 text-xs">
+        <div class="bg-amber-50 p-3 rounded-2xl border border-amber-200">
+          <span class="font-bold text-amber-900 block mb-1">🌱 Phase 1 (Ages 2-3): Sensory Phonetics</span>
+          <p class="text-slate-600 leading-relaxed">High-frequency auditory vowels (/æ/, /b/), everyday objects, primary colors, tactile sound responses.</p>
+        </div>
+        <div class="bg-sky-50 p-3 rounded-2xl border border-sky-200">
+          <span class="font-bold text-sky-900 block mb-1">🎨 Phase 2 (Ages 4-5): CVC Blending & Logic</span>
+          <p class="text-slate-600 leading-relaxed">Consonant-Vowel-Consonant words (*SUN, DOG, BUS*), counting 1-10, community places, and spatial sorting.</p>
+        </div>
+        <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-200">
+          <span class="font-bold text-emerald-900 block mb-1">🚀 Phase 3 (Ages 6-7): Story Comprehension</span>
+          <p class="text-slate-600 leading-relaxed">Early literacy, karaoke guided word-by-word reading with the Andika font, natural science, social-emotional habits.</p>
+        </div>
+      </div>
+
+      <!-- Tab Content: Parent Theme Selector -->
+      <div id="parentView-themes" class="space-y-3 text-xs hidden">
+        <p class="text-slate-500 text-[11px]">Select a tailored theme skin to match your child's interests & sensory preferences:</p>
+        <div class="grid grid-cols-2 gap-2" id="parentThemeGridContainer">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Tab Content: Screen-Time Timer -->
+      <div id="parentView-screentime" class="space-y-3 text-xs hidden">
+        <div class="p-3 bg-indigo-50 rounded-2xl border border-indigo-200">
+          <span class="font-bold text-slate-800 block mb-1">Session Eye-Rest Timer</span>
+          <span class="text-slate-500 text-[11px] block mb-2">Triggers gentle screen relaxation break after limit</span>
+          <select id="screenTimerSelect" onchange="updateScreenTimer(this.value)" class="w-full border-2 border-indigo-300 rounded-xl p-2 font-bold bg-white text-xs">
+            <option value="15">15 Minutes (Recommended)</option>
+            <option value="20">20 Minutes</option>
+            <option value="30">30 Minutes</option>
+            <option value="0">Off (Free Play)</option>
+          </select>
+        </div>
+
+        <div class="p-3 bg-emerald-50 rounded-2xl border border-emerald-200 flex items-center justify-between">
+          <div>
+            <span class="font-bold text-slate-800 block">COPPA Safe Sandbox</span>
+            <span class="text-slate-500 text-[11px]">Zero ads, zero 3rd-party trackers, zero data collection</span>
+          </div>
+          <span class="text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded-md text-[10px]">Active</span>
+        </div>
+      </div>
+
+      <!-- Tab Content: Child Progress -->
+      <div id="parentView-insights" class="space-y-3 hidden">
+        <div class="grid grid-cols-2 gap-2 text-center text-xs">
+          <div class="bg-amber-50 p-2.5 rounded-2xl border border-amber-200">
+            <span class="text-xl font-bold text-amber-600" id="statCardsExplored">26</span>
+            <span class="text-[11px] text-slate-500 block font-bold">Cards Heard</span>
+          </div>
+          <div class="bg-emerald-50 p-2.5 rounded-2xl border border-emerald-200">
+            <span class="text-xl font-bold text-emerald-600" id="statGamesWon">6</span>
+            <span class="text-[11px] text-slate-500 block font-bold">Puzzles Won</span>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="closeParentDashboard()" class="w-full mt-4 py-2.5 bg-slate-800 text-white font-bold rounded-2xl text-xs mobile-touch-bounce">
+        Back to App
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: AVATAR CUSTOMIZER FOR KIDS -->
+  <div id="avatarModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end justify-center hidden">
+    <div class="bg-white rounded-t-3xl max-w-[420px] w-full p-5 text-center border-t-4 border-amber-300">
+      <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-3"></div>
+      <h3 class="text-lg font-bold text-slate-800 mb-1">Pick Your Buddy!</h3>
+      <p class="text-xs text-slate-500 mb-4">Choose an animal buddy to learn with you!</p>
+
+      <div class="grid grid-cols-4 gap-2.5 text-2xl mb-4">
+        <button onclick="selectAvatar('🦁')" class="p-3 bg-amber-50 hover:bg-amber-100 rounded-2xl border-2 border-amber-200 mobile-touch-bounce">🦁</button>
+        <button onclick="selectAvatar('🐼')" class="p-3 bg-sky-50 hover:bg-sky-100 rounded-2xl border-2 border-sky-200 mobile-touch-bounce">🐼</button>
+        <button onclick="selectAvatar('🐰')" class="p-3 bg-rose-50 hover:bg-rose-100 rounded-2xl border-2 border-rose-200 mobile-touch-bounce">🐰</button>
+        <button onclick="selectAvatar('🦊')" class="p-3 bg-orange-50 hover:bg-orange-100 rounded-2xl border-2 border-orange-200 mobile-touch-bounce">🦊</button>
+        <button onclick="selectAvatar('🦉')" class="p-3 bg-emerald-50 hover:bg-emerald-100 rounded-2xl border-2 border-emerald-200 mobile-touch-bounce">🦉</button>
+        <button onclick="selectAvatar('🦄')" class="p-3 bg-purple-50 hover:bg-purple-100 rounded-2xl border-2 border-purple-200 mobile-touch-bounce">🦄</button>
+        <button onclick="selectAvatar('🐬')" class="p-3 bg-blue-50 hover:bg-blue-100 rounded-2xl border-2 border-blue-200 mobile-touch-bounce">🐬</button>
+        <button onclick="selectAvatar('🦖')" class="p-3 bg-green-50 hover:bg-green-100 rounded-2xl border-2 border-green-200 mobile-touch-bounce">🦖</button>
+      </div>
+
+      <input type="text" id="customKidNameInput" placeholder="Kid's Nickname" value="Leo" class="w-full text-center font-bold py-2.5 px-3 rounded-2xl border-2 border-amber-200 mb-3">
+
+      <button onclick="saveKidProfile()" class="w-full py-3 bg-brandYellow text-amber-950 font-bold rounded-2xl shadow-md mobile-touch-bounce">
+        Save Avatar!
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: THEME SELECTION BOTTOM SHEET FOR KIDS & PARENTS -->
+  <div id="themeSelectionModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end justify-center hidden">
+    <div class="bg-white rounded-t-3xl max-w-[420px] w-full p-5 shadow-2xl border-t-4 border-amber-300 max-h-[85vh] overflow-y-auto mobile-scroll-container">
+      <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-3"></div>
+
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🎨</span>
+          <div>
+            <h3 class="text-lg font-bold text-slate-800 leading-tight">Pick a World!</h3>
+            <p class="text-xs text-slate-500">Transform your learning playground</p>
+          </div>
+        </div>
+        <button onclick="closeThemeModal()" class="text-slate-400 hover:text-slate-600 text-lg">
+          <i class="fa-solid fa-circle-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Theme Cards Grid -->
+      <div class="grid grid-cols-2 gap-2.5 my-3" id="kidThemeGridContainer">
+        <!-- Rendered via JS -->
+      </div>
+
+      <button onclick="closeThemeModal()" class="w-full mt-2 py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-2xl text-xs mobile-touch-bounce shadow-md">
+        Done Exploring
+      </button>
+    </div>
+  </div>
+
+  <!-- SCREEN-TIME EYE REST SCREEN -->
+  <div id="restBreakOverlay" class="fixed inset-0 bg-sky-950/95 backdrop-blur-md z-50 flex items-center justify-center p-6 text-center text-white hidden">
+    <div class="max-w-xs">
+      <div class="text-6xl mb-3 animate-bounce">🧘‍♀️✨</div>
+      <h2 class="text-2xl font-bold mb-1">Rest Your Eyes!</h2>
+      <p class="text-sky-200 text-xs mb-4">
+        Stretch high like a giraffe and sip some cool water!
+      </p>
+      <div class="bg-white/10 rounded-2xl p-3 mb-4 border border-white/20">
+        <p class="text-xs font-semibold">Break timer: <span id="breakCountdown" class="text-amber-300 font-bold">20</span>s</p>
+      </div>
+      <button onclick="dismissRestBreak()" id="dismissBreakBtn" class="w-full py-2.5 bg-brandYellow text-amber-950 font-bold rounded-2xl opacity-50 cursor-not-allowed">
+        Resume Playing
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MOBILE APPLICATION LOGIC & DATA -->
+  <!-- ========================================== -->
+  <script>
+    /* ----------------------------------------------------
+       1. DATA DEFINITION - EXPANDED CHILD CURRICULUM
+    ---------------------------------------------------- */
+    const CURRICULUM_DATA = {
+      phase1: {
+        title: "Phase 1: Explorers (Ages 2-3)",
+        categories: [
+          {
+            name: "Alphabet & Sounds (A-Z)",
+            id: "abc",
+            items: [
+              { letter: "A", word: "Apple", phonics: "ah - /æ/", icon: "🍎", audioDesc: "A for Apple! Crisp, red, and juicy." },
+              { letter: "B", word: "Ball", phonics: "buh - /b/", icon: "⚽", audioDesc: "B for Ball! Bouncing round and high." },
+              { letter: "C", word: "Cat", phonics: "kuh - /k/", icon: "🐱", audioDesc: "C for Cat! Soft kitty says Meow." },
+              { letter: "D", word: "Duck", phonics: "duh - /d/", icon: "🦆", audioDesc: "D for Duck! Splashing in the pond quack quack." },
+              { letter: "E", word: "Elephant", phonics: "eh - /e/", icon: "🐘", audioDesc: "E for Elephant! With big gentle ears." },
+              { letter: "F", word: "Fish", phonics: "fuh - /f/", icon: "🐟", audioDesc: "F for Fish! Swimming in the blue stream." },
+              { letter: "G", word: "Grapes", phonics: "guh - /g/", icon: "🍇", audioDesc: "G for Grapes! Sweet, round, purple fruit." },
+              { letter: "H", word: "House", phonics: "huh - /h/", icon: "🏡", audioDesc: "H for House! Cozy home with family." },
+              { letter: "I", word: "Igloo", phonics: "ih - /ɪ/", icon: "🧊", audioDesc: "I for Igloo! A cool dome built from snow." },
+              { letter: "J", word: "Juice", phonics: "juh - /dʒ/", icon: "🧃", audioDesc: "J for Juice! Sweet and refreshing orange juice." },
+              { letter: "K", word: "Kite", phonics: "kuh - /k/", icon: "🪁", audioDesc: "K for Kite! Flying high in the windy sky." },
+              { letter: "L", word: "Lion", phonics: "luh - /l/", icon: "🦁", audioDesc: "L for Lion! The brave king of the jungle." },
+              { letter: "M", word: "Moon", phonics: "muh - /m/", icon: "🌙", audioDesc: "M for Moon! Glowing brightly in the night sky." },
+              { letter: "N", word: "Nest", phonics: "nuh - /n/", icon: "🪺", audioDesc: "N for Nest! A cozy home for baby birds." },
+              { letter: "O", word: "Orange", phonics: "aw - /ɒ/", icon: "🍊", audioDesc: "O for Orange! Round, bright, and citrus sweet." },
+              { letter: "P", word: "Penguin", phonics: "puh - /p/", icon: "🐧", audioDesc: "P for Penguin! Waddling happily on the ice." },
+              { letter: "Q", word: "Queen", phonics: "kwuh - /kw/", icon: "👑", audioDesc: "Q for Queen! Wearing a sparkling royal crown." },
+              { letter: "R", word: "Rainbow", phonics: "ruh - /r/", icon: "🌈", audioDesc: "R for Rainbow! Seven vibrant colors after the rain." },
+              { letter: "S", word: "Sun", phonics: "suh - /s/", icon: "☀️", audioDesc: "S for Sun! Warm sunshine welcoming the day." },
+              { letter: "T", word: "Tree", phonics: "tuh - /t/", icon: "🌳", audioDesc: "T for Tree! Tall green branches giving cool shade." },
+              { letter: "U", word: "Umbrella", phonics: "uh - /ʌ/", icon: "☂️", audioDesc: "U for Umbrella! Keeping us dry in rainy showers." },
+              { letter: "V", word: "Violin", phonics: "vuh - /v/", icon: "🎻", audioDesc: "V for Violin! Playing sweet gentle melodies." },
+              { letter: "W", word: "Whale", phonics: "wuh - /w/", icon: "🐋", audioDesc: "W for Whale! Gliding through the deep blue ocean." },
+              { letter: "X", word: "Xylophone", phonics: "zyl - /z/", icon: "🎼", audioDesc: "X for Xylophone! Rainbow chime bars making music." },
+              { letter: "Y", word: "Yo-yo", phonics: "yuh - /j/", icon: "🪀", audioDesc: "Y for Yo-yo! Spinning smoothly up and down." },
+              { letter: "Z", word: "Zebra", phonics: "zuh - /z/", icon: "🦓", audioDesc: "Z for Zebra! Proud stripes galloping across the plains." }
+            ]
+          },
+          {
+            name: "தமிழ் உயிர் எழுத்துக்கள் (Tamil)",
+            id: "tamil",
+            items: [
+              { letter: "அ", word: "அம்மா (Amma)", phonics: "Sound: 'Ah'", icon: "🤱", audioDesc: "அம்மா! அன்பான அம்மா.", tamilVoice: true },
+              { letter: "ஆ", word: "ஆடு (Aadu)", phonics: "Sound: 'Aah'", icon: "🐐", audioDesc: "ஆடு! துள்ளி ஓடும் வெள்ளாடு.", tamilVoice: true },
+              { letter: "இ", word: "இலை (Ilai)", phonics: "Sound: 'Ee'", icon: "🍃", audioDesc: "இலை! மரத்தில் அசையும் பச்சை இலை.", tamilVoice: true },
+              { letter: "ஈ", word: "ஈட்டி (Eetti)", phonics: "Sound: 'Eee'", icon: "🗡️", audioDesc: "ஈட்டி! கூர்மையான ஈட்டி.", tamilVoice: true },
+              { letter: "உ", word: "உரல் (Ural)", phonics: "Sound: 'Oo'", icon: "🥣", audioDesc: "உரல்! மாவு இடிக்கும் மர உரல்.", tamilVoice: true },
+              { letter: "ஊ", word: "ஊஞ்சல் (Oonjal)", phonics: "Sound: 'Ooo'", icon: "🎪", audioDesc: "ஊஞ்சல்! காற்றில் ஆடும் வண்ண ஊஞ்சல்.", tamilVoice: true },
+              { letter: "எ", word: "எறும்பு (Erumbu)", phonics: "Sound: 'Eh'", icon: "🐜", audioDesc: "எறும்பு! சுறுசுறுப்பான குட்டி எறும்பு.", tamilVoice: true },
+              { letter: "ஏ", word: "ஏணி (Eani)", phonics: "Sound: 'Aay'", icon: "🪜", audioDesc: "ஏணி! மேலே ஏற உதவும் ஏணி.", tamilVoice: true },
+              { letter: "ஐ", word: "ஐந்து (Ainthu)", phonics: "Sound: 'Eye'", icon: "🖐️", audioDesc: "ஐந்து! கையில் இருக்கும் ஐந்து விரல்கள்.", tamilVoice: true },
+              { letter: "ஒ", word: "ஒட்டகம் (Ottagam)", phonics: "Sound: 'Oh'", icon: "🐫", audioDesc: "ஒட்டகம்! பாலைவனத்து நண்பன் ஒட்டகம்.", tamilVoice: true },
+              { letter: "ஓ", word: "ஓடம் (Odam)", phonics: "Sound: 'Oah'", icon: "⛵", audioDesc: "ஓடம்! ஆற்றில் மிதக்கும் சின்ன ஓடம்.", tamilVoice: true },
+              { letter: "ஔ", word: "ஔவையார் (Avvaiyar)", phonics: "Sound: 'Ow'", icon: "👵", audioDesc: "ஔவையார்! நற்பண்புகளைக் கற்பித்த பாட்டி.", tamilVoice: true },
+              { letter: "ஃ", word: "எஃகு (Ehgu)", phonics: "Sound: 'Akh'", icon: "🛡️", audioDesc: "ஆய்த எழுத்து! மூன்று புள்ளிகள் கொண்ட எஃகு வாள்.", tamilVoice: true }
+            ]
+          },
+          {
+            name: "Numerals (1, 2, 3...)",
+            id: "numerals",
+            items: [
+              { number: "1", word: "One", phonics: "wun", icon: "1️⃣", audioDesc: "Number 1! The number one." },
+              { number: "2", word: "Two", phonics: "too", icon: "2️⃣", audioDesc: "Number 2! The number two." },
+              { number: "3", word: "Three", phonics: "three", icon: "3️⃣", audioDesc: "Number 3! The number three." },
+              { number: "4", word: "Four", phonics: "for", icon: "4️⃣", audioDesc: "Number 4! The number four." },
+              { number: "5", word: "Five", phonics: "fyve", icon: "5️⃣", audioDesc: "Number 5! The number five." },
+              { number: "6", word: "Six", phonics: "siks", icon: "6️⃣", audioDesc: "Number 6! The number six." },
+              { number: "7", word: "Seven", phonics: "sev-en", icon: "7️⃣", audioDesc: "Number 7! The number seven." },
+              { number: "8", word: "Eight", phonics: "ayt", icon: "8️⃣", audioDesc: "Number 8! The number eight." },
+              { number: "9", word: "Nine", phonics: "nyne", icon: "9️⃣", audioDesc: "Number 9! The number nine." },
+              { number: "10", word: "Ten", phonics: "ten", icon: "🔟", audioDesc: "Number 10! The number ten." }
+            ]
+          },
+          {
+            name: "Counting Explorer",
+            id: "counting",
+            items: [
+              { number: "1", word: "One", countVisual: "☀️", phonics: "wun", icon: "☀️", audioDesc: "One bright golden sun shining high." },
+              { number: "2", word: "Two", countVisual: "👀", phonics: "too", icon: "👀", audioDesc: "Two eyes to see the colorful world." },
+              { number: "3", word: "Three", countVisual: "🐦 🐦 🐦", phonics: "three", icon: "🐦", audioDesc: "Three cheerful birds singing in a tree." },
+              { number: "4", word: "Four", countVisual: "🚗 🚗 🚗 🚗", phonics: "for", icon: "🚗", audioDesc: "Four round wheels rolling on a car." },
+              { number: "5", word: "Five", countVisual: "🖐️", phonics: "fyve", icon: "🖐️", audioDesc: "Five fingers waving a happy hello!" },
+              { number: "6", word: "Six", countVisual: "🖍️ 🖍️ 🖍️ 🖍️ 🖍️ 🖍️", phonics: "siks", icon: "🖍️", audioDesc: "Six rainbow crayons for drawing pictures." },
+              { number: "7", word: "Seven", countVisual: "⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐", phonics: "sev-en", icon: "⭐", audioDesc: "Seven sparkling stars in the night sky." },
+              { number: "8", word: "Eight", countVisual: "🐙", phonics: "ayt", icon: "🐙", audioDesc: "Eight gentle tentacles on a friendly octopus." },
+              { number: "9", word: "Nine", countVisual: "🎈 🎈 🎈 🎈 🎈 🎈 🎈 🎈 🎈", phonics: "nyne", icon: "🎈", audioDesc: "Nine balloons floating up into the clouds." },
+              { number: "10", word: "Ten", countVisual: "🦶 🦶", phonics: "ten", icon: "🦶", audioDesc: "Ten happy toes ready to jump and dance!" }
+            ]
+          },
+          {
+            name: "Shapes & Colors",
+            id: "shapes",
+            items: [
+              { shape: "Circle", colorName: "Red Circle", phonics: "sur-kl", icon: "🔴", audioDesc: "A round red circle like a bouncy ball!" },
+              { shape: "Square", colorName: "Blue Square", phonics: "skwair", icon: "🟦", audioDesc: "A blue square with four straight sides." },
+              { shape: "Triangle", colorName: "Yellow Triangle", phonics: "try-ang-gl", icon: "🔺", audioDesc: "A yellow triangle like a slice of pizza!" },
+              { shape: "Star", colorName: "Golden Star", phonics: "stahr", icon: "⭐", audioDesc: "A twinkling golden star shining in the night." },
+              { shape: "Heart", colorName: "Pink Heart", phonics: "hahrt", icon: "💖", audioDesc: "A pink heart full of love and warm hugs." },
+              { shape: "Diamond", colorName: "Green Diamond", phonics: "dye-mund", icon: "💎", audioDesc: "A sparkling green diamond like a flying kite!" }
+            ]
+          },
+          {
+            name: "My Body & Senses",
+            id: "body",
+            items: [
+              { word: "Eyes", phonics: "आँखें / eyes", icon: "👀", audioDesc: "Eyes see the bright rainbow in the sky." },
+              { word: "Ears", phonics: "कान / ears", icon: "👂", audioDesc: "Ears listen to cheerful music and birds." },
+              { word: "Nose", phonics: "नाक / nose", icon: "👃", audioDesc: "Nose smells sweet flowers and warm cookies." },
+              { word: "Mouth", phonics: "मुँह / mouth", icon: "👄", audioDesc: "Mouth to speak kindly and smile happily." },
+              { word: "Hands", phonics: "हाथ / hands", icon: "👐", audioDesc: "Hands clap, build blocks, and hold gentle hugs." },
+              { word: "Feet", phonics: "पैर / feet", icon: "🦶", audioDesc: "Feet to walk, run, and jump around." }
+            ]
+          },
+          {
+            name: "हिंदी वर्णमाला (Hindi Swar)",
+            id: "hindi",
+            items: [
+              { letter: "अ", word: "अनार (Anar)", phonics: "ah - /a/", icon: "🍎", audioDesc: "अ से अनार! मीठे और लाल दाने।", tamilVoice: true },
+              { letter: "आ", word: "आम (Aam)", phonics: "aah - /aa/", icon: "🥭", audioDesc: "आ से आम! फलों का राजा मीठा आम।", tamilVoice: true },
+              { letter: "इ", word: "इमली (Imli)", phonics: "ee - /i/", icon: "🫒", audioDesc: "इ से इमली! खट्टी-मीठी इमली।", tamilVoice: true },
+              { letter: "ई", word: "ईख (Eekh)", phonics: "eeh - /ee/", icon: "🎋", audioDesc: "ई से ईख! मीठा गन्ने का रस।", tamilVoice: true },
+              { letter: "उ", word: "उल्लू (Ullu)", phonics: "oo - /u/", icon: "🦉", audioDesc: "उ से उल्लू! रात को जागने वाला पक्षी।", tamilVoice: true },
+              { letter: "ऊ", word: "ऊन (Oon)", phonics: "oo - /oo/", icon: "🧶", audioDesc: "ऊ से ऊन! जिससे बनते हैं गरम स्वेटर।", tamilVoice: true },
+              { letter: "ऋ", word: "ऋषि (Rishi)", phonics: "ri - /ri/", icon: "🧘‍♂️", audioDesc: "ऋ से ऋषि! ज्ञान देने वाले महर्षि।", tamilVoice: true },
+              { letter: "ए", word: "एड़ी (Aidi)", phonics: "ay - /e/", icon: "🦶", audioDesc: "ए से एड़ी! पैरों की एड़ी।", tamilVoice: true },
+              { letter: "ऐ", word: "ऐनक (Ainak)", phonics: "ai - /ai/", icon: "👓", audioDesc: "ऐ से ऐनक! आँखों पर पहनने का चश्मा।", tamilVoice: true },
+              { letter: "ओ", word: "ओखली (Okhli)", phonics: "oh - /o/", icon: "🥣", audioDesc: "ओ से ओखली! मसाले कूटने का बर्तन।", tamilVoice: true },
+              { letter: "औ", word: "औरत (Aurat)", phonics: "ow - /au/", icon: "👩", audioDesc: "औ से औरत! ममता की मूर्ति।", tamilVoice: true }
+            ]
+          },
+          {
+            name: "Animal Names (जानवरों के नाम)",
+            id: "animals",
+            items: [
+              { word: "Lion", phonics: "शेर / lion", icon: "🦁", audioDesc: "Lion is the brave king of the jungle." },
+              { word: "Elephant", phonics: "हाथी / elephant", icon: "🐘", audioDesc: "Elephant is a gentle giant with a long trunk." },
+              { word: "Tiger", phonics: "बाघ / tiger", icon: "🐅", audioDesc: "Tiger has gorgeous orange and black stripes." },
+              { word: "Monkey", phonics: "बंदर / monkey", icon: "🐒", audioDesc: "Monkey loves swinging playfully from tree branches." },
+              { word: "Zebra", phonics: "जेब्रा / zebra", icon: "🦓", audioDesc: "Zebra has stylish black and white stripes." },
+              { word: "Giraffe", phonics: "जिराफ / giraffe", icon: "🦒", audioDesc: "Giraffe has a long neck reaching tall trees." },
+              { word: "Bear", phonics: "भालू / bear", icon: "🐻", audioDesc: "Bear has soft fluffy fur and loves honey." },
+              { word: "Rabbit", phonics: "खरगोश / rabbit", icon: "🐰", audioDesc: "Rabbit jumps hop hop across the green grass." },
+              { word: "Fox", phonics: "लोमड़ी / fox", icon: "🦊", audioDesc: "Fox is a smart and clever forest animal." },
+              { word: "Panda", phonics: "पांडा / panda", icon: "🐼", audioDesc: "Panda loves munching green bamboo shoots." }
+            ]
+          },
+          {
+            name: "Vegetable Names (सब्जियों के नाम)",
+            id: "vegetables",
+            items: [
+              { word: "Carrot", phonics: "गाजर / carrot", icon: "🥕", audioDesc: "Carrot is a crunchy orange vitamin veggie." },
+              { word: "Tomato", phonics: "टमाटर / tomato", icon: "🍅", audioDesc: "Tomato is a juicy red round vegetable." },
+              { word: "Potato", phonics: "आलू / potato", icon: "🥔", audioDesc: "Potato is a yummy healthy root vegetable." },
+              { word: "Broccoli", phonics: "ब्रोकोली / broccoli", icon: "🥦", audioDesc: "Broccoli looks like little green trees." },
+              { word: "Cucumber", phonics: "खीरा / cucumber", icon: "🥒", audioDesc: "Cucumber is cool, crisp, and fresh." },
+              { word: "Pumpkin", phonics: "कद्दू / pumpkin", icon: "🎃", audioDesc: "Pumpkin is a big golden yellow vegetable." },
+              { word: "Spinach", phonics: "पालक / spinach", icon: "🥬", audioDesc: "Spinach gives us strong and healthy muscles." },
+              { word: "Peas", phonics: "मटर / peas", icon: "🟢", audioDesc: "Peas are sweet little green pods." }
+            ]
+          },
+          {
+            name: "Fruit Names (फलों के नाम)",
+            id: "fruits",
+            items: [
+              { word: "Apple", phonics: "सेब / apple", icon: "🍎", audioDesc: "Apple is crisp, sweet, and red." },
+              { word: "Banana", phonics: "केला / banana", icon: "🍌", audioDesc: "Banana gives sweet energy for playing." },
+              { word: "Mango", phonics: "आम / mango", icon: "🥭", audioDesc: "Mango is the juicy king of sweet fruits." },
+              { word: "Grapes", phonics: "अंगूर / grapes", icon: "🍇", audioDesc: "Grapes grow in sweet purple and green clusters." },
+              { word: "Orange", phonics: "संतरा / orange", icon: "🍊", audioDesc: "Orange is packed with fresh vitamin C." },
+              { word: "Strawberry", phonics: "स्ट्रॉबेरी / strawberry", icon: "🍓", audioDesc: "Strawberry is a sweet little red berry." },
+              { word: "Watermelon", phonics: "तरबूज / watermelon", icon: "🍉", audioDesc: "Watermelon is big, cool, and refreshing." },
+              { word: "Pineapple", phonics: "अनानास / pineapple", icon: "🍍", audioDesc: "Pineapple is a delicious tropical crown fruit." }
+            ]
+          }
+        ]
+      },
+      phase2: {
+        title: "Phase 2: Word Builders (Ages 4-5)",
+        categories: [
+          {
+            name: "CVC Word Families",
+            id: "words",
+            items: [
+              { word: "CAT", phonics: "C - A - T : /kæt/", icon: "🐱", audioDesc: "C-A-T spells Cat! A furry kitten." },
+              { word: "SUN", phonics: "S - U - N : /sʌn/", icon: "☀️", audioDesc: "S-U-N spells Sun! It brings warm morning light." },
+              { word: "DOG", phonics: "D - O - G : /dɒɡ/", icon: "🐶", audioDesc: "D-O-G spells Dog! A playful puppy friend." },
+              { word: "BUS", phonics: "B - U - S : /bʌs/", icon: "🚌", audioDesc: "B-U-S spells Bus! Riding with friends to school." },
+              { word: "PIG", phonics: "P - I - G : /pɪɡ/", icon: "🐷", audioDesc: "P-I-G spells Pig! Cheerful piggy rolling in mud." },
+              { word: "HEN", phonics: "H - E - N : /hen/", icon: "🐔", audioDesc: "H-E-N spells Hen! Clucking gently on the farm." }
+            ]
+          },
+          {
+            name: "Community Helpers",
+            id: "helpers",
+            items: [
+              { word: "Firefighter", phonics: "fyer-fye-ter", icon: "🧑‍🚒", audioDesc: "Firefighters bravely keep our neighborhoods safe." },
+              { word: "Doctor", phonics: "dok-ter", icon: "👩‍⚕️", audioDesc: "Doctors care for us and help us stay healthy." },
+              { word: "Teacher", phonics: "tee-cher", icon: "🧑‍🏫", audioDesc: "Teachers guide us to read, count, and discover." },
+              { word: "Police Officer", phonics: "puh-lees", icon: "👮", audioDesc: "Police officers protect our streets and help others." },
+              { word: "Farmer", phonics: "fahr-mer", icon: "🧑‍🌾", audioDesc: "Farmers grow fresh fruits, vegetables, and milk." }
+            ]
+          },
+          {
+            name: "Feelings & Emotions",
+            id: "emotions",
+            items: [
+              { word: "Happy", phonics: "hap-ee", icon: "😊", audioDesc: "Happy! Big bright smiles when playing with friends." },
+              { word: "Calm", phonics: "kahm", icon: "😌", audioDesc: "Calm! Taking deep gentle breaths like a soft breeze." },
+              { word: "Curious", phonics: "kyoor-ee-us", icon: "🧐", audioDesc: "Curious! Wondering how things work in the world." },
+              { word: "Brave", phonics: "brayv", icon: "🦁", audioDesc: "Brave! Trying something new even when a little shy." }
+            ]
+          },
+          {
+            name: "Animals & Habitats",
+            id: "animals",
+            items: [
+              { word: "Lion", phonics: "lye-un", icon: "🦁", audioDesc: "Lion! The golden king of the savannah." },
+              { word: "Penguin", phonics: "pen-gwin", icon: "🐧", audioDesc: "Penguin! Waddling and swimming in the chilly ice." },
+              { word: "Dolphin", phonics: "dol-fin", icon: "🐬", audioDesc: "Dolphin! Leaping gracefully over ocean waves." },
+              { word: "Monkey", phonics: "mung-kee", icon: "🐒", audioDesc: "Monkey! Swinging playfully from tall tree branches." }
+            ]
+          }
+        ]
+      },
+      phase3: {
+        title: "Phase 3: Discoverers (Ages 6-7)",
+        categories: [
+          {
+            name: "Phonics Digraphs (CH/SH/TH)",
+            id: "digraphs",
+            items: [
+              { word: "Ship (SH)", phonics: "sh - /ʃɪp/", icon: "🚢", audioDesc: "S-H makes the quiet Shhh sound, like a giant ocean ship." },
+              { word: "Chair (CH)", phonics: "ch - /tʃeər/", icon: "🪑", audioDesc: "C-H makes the cheerful Ch-Ch sound, like a comfy chair." },
+              { word: "Thumb (TH)", phonics: "th - /θʌm/", icon: "👍", audioDesc: "T-H makes the soft Th sound, giving a thumbs up!" },
+              { word: "Whale (WH)", phonics: "wh - /weɪl/", icon: "🐋", audioDesc: "W-H makes the whistling Wh sound, like a friendly whale." }
+            ]
+          },
+          {
+            name: "Solar System & Space",
+            id: "space",
+            items: [
+              { word: "Sun", phonics: "sun", icon: "☀️", audioDesc: "The Sun is a giant star giving warmth and light." },
+              { word: "Earth", phonics: "erth", icon: "🌍", audioDesc: "Planet Earth, our wonderful home with oceans and forests." },
+              { word: "Moon", phonics: "moon", icon: "🌙", audioDesc: "The Moon orbits Earth and glows softly at night." },
+              { word: "Mars", phonics: "mahrz", icon: "🪐", audioDesc: "Mars is known as the red rocky planet next to Earth." }
+            ]
+          },
+          {
+            name: "Earth's Ecosystems",
+            id: "nature",
+            items: [
+              { word: "Rainforest", phonics: "rayn-for-ist", icon: "🌴", audioDesc: "Rainforests are filled with tall green trees and rare birds." },
+              { word: "Coral Reef", phonics: "kor-ul reef", icon: "🐠", audioDesc: "Coral reefs are underwater gardens packed with sea life." },
+              { word: "Desert", phonics: "dez-ert", icon: "🌵", audioDesc: "Deserts are sunny sandy landscapes with hardy cactus plants." },
+              { word: "Mountain", phonics: "mown-tin", icon: "🏔️", audioDesc: "Mountains rise high with fresh air and snowy peaks." }
+            ]
+          },
+          {
+            name: "Time & Seasons",
+            id: "seasons",
+            items: [
+              { word: "Spring", phonics: "spring", icon: "🌸", audioDesc: "Spring brings blooming buds and fresh green leaves." },
+              { word: "Summer", phonics: "sum-er", icon: "🏖️", audioDesc: "Summer brings long sunny days and splash play." },
+              { word: "Autumn", phonics: "aw-tum", icon: "🍂", audioDesc: "Autumn turns leaves into red, gold, and orange." },
+              { word: "Winter", phonics: "win-ter", icon: "❄️", audioDesc: "Winter brings cozy warm coats and soft snowflakes." }
+            ]
+          }
+        ]
+      }
+    };
+
+    const STORIES_DATABASE = [
+      {
+        id: "story1",
+        title: "Pip the Brave Penguin",
+        theme: "Courage & Discovery",
+        coverEmoji: "🐧",
+        pages: [
+          { sentence: "Pip was a happy penguin who loved to slide on ice.", words: ["Pip", "was", "a", "happy", "penguin", "who", "loved", "to", "slide", "on", "ice."], illustration: "❄️🐧🧊" },
+          { sentence: "Today Pip was nervous about taking his very first dive.", words: ["Today", "Pip", "was", "nervous", "about", "taking", "his", "very", "first", "dive."], illustration: "🌊👀🐧" },
+          { sentence: "Mom held his flipper and said: Take a deep breath!", words: ["Mom", "held", "his", "flipper", "and", "said:", "Take", "a", "deep", "breath!"], illustration: "❤️🐧🤗" },
+          { sentence: "SPLASH! Pip swam fast and found sparkly fish friends!", words: ["SPLASH!", "Pip", "swam", "fast", "and", "found", "sparkly", "fish", "friends!"], illustration: "🐬💦🎉" }
+        ],
+        moral: "Courage brings exciting discoveries!"
+      },
+      {
+        id: "story2",
+        title: "Sammy the Seed",
+        theme: "Patience & Growth",
+        coverEmoji: "🌱",
+        pages: [
+          { sentence: "Sammy was a tiny seed tucked cozy in the warm soil.", words: ["Sammy", "was", "a", "tiny", "seed", "tucked", "cozy", "in", "the", "warm", "soil."], illustration: "🟫🌰💤" },
+          { sentence: "Gentle rain gave sweet water every morning.", words: ["Gentle", "rain", "gave", "sweet", "water", "every", "morning."], illustration: "🌧️💧🌱" },
+          { sentence: "Sammy reached upward to the bright shining sun.", words: ["Sammy", "reached", "upward", "to", "the", "bright", "shining", "sun."], illustration: "☀️🌿✨" },
+          { sentence: "Now Sammy is a golden sunflower dancing with the bees!", words: ["Now", "Sammy", "is", "a", "golden", "sunflower", "dancing", "with", "the", "bees!"], illustration: "🌻🐝🍯" }
+        ],
+        moral: "With gentle patience, you grow big and strong!"
+      },
+      {
+        id: "story3",
+        title: "Bella Bear Shares",
+        theme: "Empathy & Kindness",
+        coverEmoji: "🐻",
+        pages: [
+          { sentence: "Bella Bear picked a basket of sweet wild berries.", words: ["Bella", "Bear", "picked", "a", "basket", "of", "sweet", "wild", "berries."], illustration: "🧺🫐🐻" },
+          { sentence: "Fox sat under the tree with an empty tummy.", words: ["Fox", "sat", "under", "the", "tree", "with", "an", "empty", "tummy."], illustration: "🦊🥺🌳" },
+          { sentence: "Bella smiled warmly and shared half her basket.", words: ["Bella", "smiled", "warmly", "and", "shared", "half", "her", "basket."], illustration: "🍓🤝🐻" },
+          { sentence: "Eating together made the berries taste even sweeter!", words: ["Eating", "together", "made", "the", "berries", "taste", "even", "sweeter!"], illustration: "🎉🦊🐻😋" }
+        ],
+        moral: "Sharing with others brings joy to everyone!"
+      }
+    ];
+
+    const QUIZ_QUESTIONS = [
+      {
+        question: "Which animal says 'Moo'?",
+        options: [
+          { icon: "🐮", label: "Cow", correct: true },
+          { icon: "🐱", label: "Cat", correct: false },
+          { icon: "🐶", label: "Dog", correct: false }
+        ]
+      },
+      {
+        question: "Find the Round Circle:",
+        options: [
+          { icon: "🔴", label: "Circle", correct: true },
+          { icon: "🔺", label: "Triangle", correct: false },
+          { icon: "🟦", label: "Square", correct: false }
+        ]
+      },
+      {
+        question: "Which fruit is sweet and red?",
+        options: [
+          { icon: "🍎", label: "Apple", correct: true },
+          { icon: "🍋", label: "Lemon", correct: false },
+          { icon: "🥥", label: "Coconut", correct: false }
+        ]
+      },
+      {
+        question: "Who helps put out fires?",
+        options: [
+          { icon: "🧑‍🚒", label: "Firefighter", correct: true },
+          { icon: "🧑‍🍳", label: "Chef", correct: false },
+          { icon: "🎨", label: "Painter", correct: false }
+        ]
+      },
+      {
+        question: "What shines in the sky at night?",
+        options: [
+          { icon: "🌙", label: "Moon", correct: true },
+          { icon: "☀️", label: "Sun", correct: false },
+          { icon: "🪁", label: "Kite", correct: false }
+        ]
+      }
+    ];
+
+    const DAILY_HABITS = [
+      { id: "h1", name: "Brush My Teeth", time: "Morning & Night", icon: "🪥", done: true, tip: "Brush circles gently for 2 minutes!" },
+      { id: "h2", name: "Drink Fresh Water", time: "All Day", icon: "💧", done: false, tip: "Keeps your brain fast and bright." },
+      { id: "h3", name: "Put Away My Toys", time: "After Play", icon: "🧸", done: true, tip: "Keeps your room clean and cozy." },
+      { id: "h4", name: "Wash Hands with Soap", time: "Before Eating", icon: "🧼", done: false, tip: "Sing your ABCs while lathering!" }
+    ];
+
+    const RHYMES_DATABASE = [
+      {
+        id: "twinkle",
+        title: "Twinkle Twinkle Little Star",
+        coverEmoji: "⭐",
+        lang: "en-US",
+        lines: [
+          { text: "Twinkle, twinkle, little star,", words: ["Twinkle,", "twinkle,", "little", "star,"], notes: [261.63, 261.63, 392.00, 392.00], pitches: [1.0, 1.0, 1.45, 1.45] },
+          { text: "How I wonder what you are!", words: ["How", "I", "wonder", "what", "you", "are!"], notes: [440.00, 440.00, 392.00, 349.23], pitches: [1.6, 1.6, 1.45, 1.3] },
+          { text: "Up above the world so high,", words: ["Up", "above", "the", "world", "so", "high,"], notes: [349.23, 349.23, 329.63, 329.63], pitches: [1.3, 1.3, 1.2, 1.2] },
+          { text: "Like a diamond in the sky.", words: ["Like", "a", "diamond", "in", "the", "sky."], notes: [293.66, 293.66, 261.63, 261.63], pitches: [1.1, 1.1, 1.0, 1.0] }
+        ]
+      },
+      {
+        id: "baabaa",
+        title: "Baa Baa Black Sheep",
+        coverEmoji: "🐑",
+        lang: "en-US",
+        lines: [
+          { text: "Baa baa black sheep, have you any wool?", words: ["Baa", "baa", "black", "sheep,", "have", "you", "any", "wool?"], notes: [261.63, 261.63, 392.00, 392.00, 440.00, 440.00, 440.00, 392.00], pitches: [1.0, 1.0, 1.45, 1.45, 1.6, 1.6, 1.6, 1.45] },
+          { text: "Yes sir, yes sir, three bags full!", words: ["Yes", "sir,", "yes", "sir,", "three", "bags", "full!"], notes: [349.23, 349.23, 329.63, 329.63, 293.66, 293.66, 261.63], pitches: [1.3, 1.3, 1.2, 1.2, 1.1, 1.1, 1.0] },
+          { text: "One for the master, and one for the dame,", words: ["One", "for", "the", "master,", "and", "one", "for", "the", "dame,"], notes: [261.63, 261.63, 392.00, 392.00, 440.00, 440.00, 392.00, 349.23], pitches: [1.0, 1.0, 1.45, 1.45, 1.6, 1.6, 1.45, 1.3] },
+          { text: "And one for the little boy down the lane.", words: ["And", "one", "for", "the", "little", "boy", "down", "the", "lane."], notes: [349.23, 329.63, 293.66, 261.63, 293.66, 329.63, 261.63, 261.63, 261.63], pitches: [1.3, 1.2, 1.1, 1.0, 1.1, 1.2, 1.0, 1.0, 1.0] }
+        ]
+      },
+      {
+        id: "bus",
+        title: "The Wheels on the Bus",
+        coverEmoji: "🚌",
+        lang: "en-US",
+        lines: [
+          { text: "The wheels on the bus go round and round,", words: ["The", "wheels", "on", "the", "bus", "go", "round", "and", "round,"], notes: [261.63, 349.23, 349.23, 349.23, 349.23, 392.00, 440.00, 349.23, 261.63], pitches: [1.0, 1.3, 1.3, 1.3, 1.3, 1.45, 1.6, 1.3, 1.0] },
+          { text: "Round and round, round and round.", words: ["Round", "and", "round,", "round", "and", "round."], notes: [392.00, 392.00, 392.00, 440.00, 392.00, 349.23], pitches: [1.45, 1.45, 1.45, 1.6, 1.45, 1.3] },
+          { text: "The wheels on the bus go round and round,", words: ["The", "wheels", "on", "the", "bus", "go", "round", "and", "round,"], notes: [261.63, 349.23, 349.23, 349.23, 349.23, 392.00, 440.00, 349.23, 261.63], pitches: [1.0, 1.3, 1.3, 1.3, 1.3, 1.45, 1.6, 1.3, 1.0] },
+          { text: "All through the town!", words: ["All", "through", "the", "town!"], notes: [392.00, 329.63, 293.66, 261.63], pitches: [1.45, 1.2, 1.1, 1.0] }
+        ]
+      },
+      {
+        id: "nila",
+        title: "நிலா நிலா ஓடி வா (Nila Nila)",
+        coverEmoji: "🌙",
+        lang: "ta-IN",
+        lines: [
+          { text: "நிலா நிலா ஓடி வா, நில்லாமல் ஓடி வா,", words: ["நிலா", "நிலா", "ஓடி", "வா,", "நில்லாமல்", "ஓடி", "வா,"], notes: [329.63, 392.00, 329.63, 293.66, 261.63, 293.66, 329.63], pitches: [1.2, 1.45, 1.2, 1.1, 1.0, 1.1, 1.2] },
+          { text: "மலை மீது ஏறி வா, மல்லிகைப் பூ சூடி வா!", words: ["மலை", "மீது", "ஏறி", "வா,", "மல்லிகைப்", "பூ", "சூடி", "வா!"], notes: [392.00, 440.00, 392.00, 349.23, 329.63, 349.23, 392.00], pitches: [1.45, 1.6, 1.45, 1.3, 1.2, 1.3, 1.45] },
+          { text: "வட்ட வட்ட நிலாவே, வண்ண வண்ண நிலாவே,", words: ["வட்ட", "வட்ட", "நிலாவே,", "வண்ண", "வண்ண", "நிலாவே,"], notes: [440.00, 392.00, 349.23, 329.63, 293.66, 329.63, 349.23], pitches: [1.6, 1.45, 1.3, 1.2, 1.1, 1.2, 1.3] },
+          { text: "பட்டுப் போல ஒளி வீசி, பாப்பாவிடம் ஓடி வா!", words: ["பட்டுப்", "போல", "ஒளி", "வீசி,", "பாப்பாவிடம்", "ஓடி", "வா!"], notes: [392.00, 349.23, 329.63, 293.66, 261.63, 293.66, 261.63], pitches: [1.45, 1.3, 1.2, 1.1, 1.0, 1.1, 1.0] }
+        ]
+      }
+    ];
+
+    const CHIME_BARS = [
+      { note: 'C', label: 'Do', freq: 261.63, bg: 'bg-rose-400', key: '1' },
+      { note: 'D', label: 'Re', freq: 293.66, bg: 'bg-orange-400', key: '2' },
+      { note: 'E', label: 'Mi', freq: 329.63, bg: 'bg-amber-400', key: '3' },
+      { note: 'F', label: 'Fa', freq: 349.23, bg: 'bg-emerald-400', key: '4' },
+      { note: 'G', label: 'Sol', freq: 392.00, bg: 'bg-sky-400', key: '5' },
+      { note: 'A', label: 'La', freq: 440.00, bg: 'bg-indigo-400', key: '6' },
+      { note: 'B', label: 'Ti', freq: 493.88, bg: 'bg-purple-400', key: '7' },
+      { note: 'C²', label: 'Do', freq: 523.25, bg: 'bg-pink-400', key: '8' }
+    ];
+
+    const MELODY_SONG_LIBRARY = [
+      {
+        id: "twinkle",
+        name: "Twinkle Little Star",
+        icon: "⭐",
+        notes: [
+          { n: 'C', f: 261.63, d: 450 }, { n: 'C', f: 261.63, d: 450 },
+          { n: 'G', f: 392.00, d: 450 }, { n: 'G', f: 392.00, d: 450 },
+          { n: 'A', f: 440.00, d: 450 }, { n: 'A', f: 440.00, d: 450 },
+          { n: 'G', f: 392.00, d: 850 },
+          { n: 'F', f: 349.23, d: 450 }, { n: 'F', f: 349.23, d: 450 },
+          { n: 'E', f: 329.63, d: 450 }, { n: 'E', f: 329.63, d: 450 },
+          { n: 'D', f: 293.66, d: 450 }, { n: 'D', f: 293.66, d: 450 },
+          { n: 'C', f: 261.63, d: 850 }
+        ]
+      },
+      {
+        id: "mary",
+        name: "Mary Had a Little Lamb",
+        icon: "🐑",
+        notes: [
+          { n: 'E', f: 329.63, d: 450 }, { n: 'D', f: 293.66, d: 450 },
+          { n: 'C', f: 261.63, d: 450 }, { n: 'D', f: 293.66, d: 450 },
+          { n: 'E', f: 329.63, d: 450 }, { n: 'E', f: 329.63, d: 450 },
+          { n: 'E', f: 329.63, d: 850 },
+          { n: 'D', f: 293.66, d: 450 }, { n: 'D', f: 293.66, d: 450 },
+          { n: 'D', f: 293.66, d: 850 },
+          { n: 'E', f: 329.63, d: 450 }, { n: 'G', f: 392.00, d: 450 },
+          { n: 'G', f: 392.00, d: 850 }
+        ]
+      },
+      {
+        id: "macdonald",
+        name: "Old MacDonald Had a Farm",
+        icon: "🚜",
+        notes: [
+          { n: 'G', f: 392.00, d: 400 }, { n: 'G', f: 392.00, d: 400 },
+          { n: 'G', f: 392.00, d: 400 }, { n: 'D', f: 293.66, d: 400 },
+          { n: 'E', f: 329.63, d: 400 }, { n: 'E', f: 329.63, d: 400 },
+          { n: 'D', f: 293.66, d: 750 },
+          { n: 'B', f: 493.88, d: 400 }, { n: 'B', f: 493.88, d: 400 },
+          { n: 'A', f: 440.00, d: 400 }, { n: 'A', f: 440.00, d: 400 },
+          { n: 'G', f: 392.00, d: 750 }
+        ]
+      },
+      {
+        id: "rowboat",
+        name: "Row, Row, Row Your Boat",
+        icon: "⛵",
+        notes: [
+          { n: 'C', f: 261.63, d: 550 }, { n: 'C', f: 261.63, d: 550 },
+          { n: 'C', f: 261.63, d: 400 }, { n: 'D', f: 293.66, d: 250 },
+          { n: 'E', f: 329.63, d: 600 },
+          { n: 'E', f: 329.63, d: 400 }, { n: 'D', f: 293.66, d: 250 },
+          { n: 'E', f: 329.63, d: 400 }, { n: 'F', f: 349.23, d: 250 },
+          { n: 'G', f: 392.00, d: 900 }
+        ]
+      }
+    ];
+
+    let activeMelodySongIdx = 0;
+    let isMelodyPlaying = false;
+    let melodyPlaybackTimeouts = [];
+
+    const PHASE_CONFIG = {
+      phase1: { label: '2-3y', icon: '🌱' },
+      phase2: { label: '4-5y', icon: '🎨' },
+      phase3: { label: '6-7y', icon: '🚀' }
+    };
+
+    const THEMES = {
+      safari: {
+        id: "safari",
+        name: "Jungle Safari",
+        icon: "🦁",
+        desc: "Warm savanna honey, gentle greens & wild friends",
+        bgHex: "#F9F8F3", // Warm oatmeal
+        headerBg: "rgba(249, 248, 243, 0.95)",
+        borderColor: "#EADFC9",
+        borderClass: "border-[#EADFC9]",
+        dockBg: "rgba(249, 248, 243, 0.95)",
+        activeTabBg: "bg-amber-200/90 text-amber-950",
+        cardGradient: "from-amber-50/90 via-[#F9F8F3] to-amber-100/60",
+        cardBorder: "border-amber-300",
+        btnPrimary: "bg-amber-400 text-amber-950 border-amber-500",
+        badgeBg: "bg-amber-100 text-amber-900 border-amber-300",
+        accentTint: "#D97706",
+        soundFreq: 523.25
+      },
+      dino: {
+        id: "dino",
+        name: "Prehistoric Dinos",
+        icon: "🦖",
+        desc: "Earthy moss green, gentle fossils & friendly T-Rex",
+        bgHex: "#F4F7F4", // Soft moss tint
+        headerBg: "rgba(244, 247, 244, 0.95)",
+        borderColor: "#D2E2D4",
+        borderClass: "border-[#D2E2D4]",
+        dockBg: "rgba(244, 247, 244, 0.95)",
+        activeTabBg: "bg-emerald-200/90 text-emerald-950",
+        cardGradient: "from-emerald-50/90 via-[#F4F7F4] to-emerald-100/60",
+        cardBorder: "border-emerald-300",
+        btnPrimary: "bg-emerald-500 text-white border-emerald-600",
+        badgeBg: "bg-emerald-100 text-emerald-900 border-emerald-300",
+        accentTint: "#059669",
+        soundFreq: 440.00
+      },
+      ocean: {
+        id: "ocean",
+        name: "Under the Sea",
+        icon: "🌊",
+        desc: "Aquamarine mist, coral reefs & graceful whales",
+        bgHex: "#F2F7F9", // Gentle marine mist
+        headerBg: "rgba(242, 247, 249, 0.95)",
+        borderColor: "#CBE4ED",
+        borderClass: "border-[#CBE4ED]",
+        dockBg: "rgba(242, 247, 249, 0.95)",
+        activeTabBg: "bg-sky-200/90 text-sky-950",
+        cardGradient: "from-sky-50/90 via-[#F2F7F9] to-sky-100/60",
+        cardBorder: "border-sky-300",
+        btnPrimary: "bg-sky-500 text-white border-sky-600",
+        badgeBg: "bg-sky-100 text-sky-900 border-sky-300",
+        accentTint: "#0284C7",
+        soundFreq: 587.33
+      },
+      space: {
+        id: "space",
+        name: "Space Voyage",
+        icon: "🚀",
+        desc: "Gentle cosmic lilac, sleepy moon & glowing stars",
+        bgHex: "#F2F1F8", // Calm muted starlight lavender
+        headerBg: "rgba(242, 241, 248, 0.95)",
+        borderColor: "#D9D6E7",
+        borderClass: "border-[#D9D6E7]",
+        dockBg: "rgba(242, 241, 248, 0.95)",
+        activeTabBg: "bg-[#DDD8EE] text-indigo-950",
+        cardGradient: "from-[#FAF9FD] via-[#F2F1F8] to-[#E3DFEE]",
+        cardBorder: "border-[#C7BFDF]",
+        btnPrimary: "bg-[#9A8FCD] text-slate-950 border-[#8376BC]",
+        badgeBg: "bg-[#E5E0F2] text-indigo-950 border-[#CEC6E6]",
+        accentTint: "#59507E",
+        soundFreq: 659.25
+      },
+      fairytale: {
+        id: "fairytale",
+        name: "Enchanted Fairytale",
+        icon: "🦄",
+        desc: "Magical blossom pink, gentle castles & unicorns",
+        bgHex: "#F7F1F4", // Delicate soft petal rose
+        headerBg: "rgba(247, 241, 244, 0.95)",
+        borderColor: "#E8D5DF",
+        borderClass: "border-[#E8D5DF]",
+        dockBg: "rgba(247, 241, 244, 0.95)",
+        activeTabBg: "bg-[#EED7E4] text-rose-950",
+        cardGradient: "from-[#FDF9FB] via-[#F7F1F4] to-[#EEDDE6]",
+        cardBorder: "border-[#DCBFD1]",
+        btnPrimary: "bg-[#C48EA9] text-slate-950 border-[#B47997]",
+        badgeBg: "bg-[#F0DEE8] text-rose-950 border-[#DEC2D3]",
+        accentTint: "#7C4C64",
+        soundFreq: 698.46
+      },
+      vehicles: {
+        id: "vehicles",
+        name: "Vehicles & Build",
+        icon: "🚜",
+        desc: "Warm clay sand, friendly train tracks & trucks",
+        bgHex: "#F6F2EB", // Muted linen & clay tone
+        headerBg: "rgba(246, 242, 235, 0.95)",
+        borderColor: "#E4DAD0",
+        borderClass: "border-[#E4DAD0]",
+        dockBg: "rgba(246, 242, 235, 0.95)",
+        activeTabBg: "bg-[#ECDDCF] text-stone-900",
+        cardGradient: "from-[#FDFBF7] via-[#F6F2EB] to-[#E8DDD1]",
+        cardBorder: "border-[#D8C7B7]",
+        btnPrimary: "bg-[#C7A27D] text-slate-950 border-[#B58D66]",
+        badgeBg: "bg-[#EFE4D8] text-stone-900 border-[#DAC7B4]",
+        accentTint: "#6E5B4B",
+        soundFreq: 440.00
+      }
+    };
+
+    let activeThemeKey = 'safari';
+
+    function openThemeModal() {
+      playTone('pop');
+      renderThemeGrid();
+      document.getElementById('themeSelectionModal').classList.remove('hidden');
+    }
+
+    function closeThemeModal() {
+      document.getElementById('themeSelectionModal').classList.add('hidden');
+    }
+
+    function renderThemeGrid() {
+      const container = document.getElementById('kidThemeGridContainer');
+      const parentContainer = document.getElementById('parentThemeGridContainer');
+      if (!container) return;
+
+      const html = Object.keys(THEMES).map(key => {
+        const theme = THEMES[key];
+        const isSelected = key === activeThemeKey;
+        return `
+          <button onclick="applyTheme('${key}')" 
+                  style="background-color: ${theme.bgHex}; border-color: ${isSelected ? theme.accentTint : theme.borderColor};"
+                  class="kid-card-3d p-3 rounded-2xl border-2 flex flex-col items-center text-center transition-all mobile-touch-bounce ${
+                    isSelected ? 'ring-2 ring-slate-800 shadow-md' : 'shadow-none'
+                  }">
+            <div class="text-4xl my-1 drop-shadow-sm">${theme.icon}</div>
+            <div class="text-xs font-bold text-slate-800 mt-1">${theme.name}</div>
+            <p class="text-[10px] text-slate-600 line-clamp-2 mt-0.5 leading-tight">${theme.desc}</p>
+            ${isSelected ? `<span class="mt-2 text-[9px] font-bold text-white px-2.5 py-0.5 rounded-full" style="background-color: ${theme.accentTint};">Active World</span>` : ''}
+          </button>
+        `;
+      }).join('');
+
+      container.innerHTML = html;
+      if (parentContainer) parentContainer.innerHTML = html;
+    }
+
+    function applyTheme(themeKey) {
+      if (!THEMES[themeKey]) return;
+      activeThemeKey = themeKey;
+      const theme = THEMES[themeKey];
+
+      playFrequency(theme.soundFreq || 523.25);
+
+      // 1. Update Header Badge
+      const themeIcon = document.getElementById('currentThemeIcon');
+      if (themeIcon) themeIcon.innerText = theme.icon;
+      const label = document.getElementById('currentThemeLabel');
+      if (label) label.innerText = theme.name.split(' ')[0];
+
+      // 2. Adapt App Shell & Viewport Backgrounds
+      const shell = document.getElementById('mobileAppShell');
+      if (shell) {
+        shell.style.backgroundColor = theme.bgHex;
+      }
+      const viewport = document.getElementById('appViewport');
+      if (viewport) {
+        viewport.style.backgroundColor = theme.bgHex;
+      }
+
+      // 3. Adapt Status Bar & App Header
+      const statusBar = document.getElementById('mobileStatusBar');
+      if (statusBar) {
+        statusBar.style.backgroundColor = theme.headerBg;
+        statusBar.style.borderColor = theme.borderColor;
+      }
+      const appHeader = document.getElementById('mobileAppHeader');
+      if (appHeader) {
+        appHeader.style.backgroundColor = theme.headerBg;
+        appHeader.style.borderColor = theme.borderColor;
+      }
+
+      // 4. Adapt Bottom Dock Navigation
+      const bottomNav = document.getElementById('mobileBottomNav');
+      if (bottomNav) {
+        bottomNav.style.backgroundColor = theme.dockBg;
+        bottomNav.style.borderColor = theme.borderColor;
+      }
+
+      // 5. Re-render active tab buttons & views
+      document.querySelectorAll('.dock-btn').forEach(btn => {
+        btn.className = "dock-btn flex-1 flex flex-col items-center py-1 rounded-2xl transition text-slate-400 font-bold mobile-touch-bounce";
+      });
+      const activeTabBtn = document.getElementById(`tab-${currentTab}`);
+      if (activeTabBtn) {
+        activeTabBtn.className = `dock-btn flex-1 flex flex-col items-center py-1 rounded-2xl transition font-bold mobile-touch-bounce ${theme.activeTabBg}`;
+      }
+
+      renderThemeGrid();
+      renderView();
+
+      // Gentle celebration sparkle
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 20,
+          spread: 35,
+          origin: { y: 0.7 }
+        });
+      }
+    }
+
+    /* ----------------------------------------------------
+       2. STATE & SOUND SYNTHESIS
+    ---------------------------------------------------- */
+    let currentPhase = 'phase1';
+    let currentTab = 'flashcards';
+    let isSoundMuted = false;
+    let starsCount = 24;
+    let kidAvatar = '🦁';
+    let kidName = 'Leo';
+    let activeStoryIndex = 0;
+    let activeStoryPage = 0;
+    let activeQuizIndex = 0;
+    let activeAudioContext = null;
+
+    /* Rhymes Karaoke State */
+    let activeRhymeIdx = 0;
+    let isKaraokePlaying = false;
+    let karaokeCurrentLine = 0;
+    let karaokeCurrentWord = -1;
+    let karaokeTimer = null;
+
+    /* Full-screen Card Deck State for the Flashcards Tab */
+    let fsDeckCategoryIdx = 0;
+    let fsDeckItemIdx = 0;
+    let isInsideCardDetail = false; // Toggle between category menu tiles & full-screen card viewer
+    let preferredFemaleVoice = null;
+    let preferredTamilVoice = null;
+
+    /* Full-screen Content View State for Stories, Games, Melody, Rhymes */
+    let isInsideStoryDetail = false;
+    let isInsideGameDetail = false;
+    let activeGameType = 'quiz'; // 'quiz' or 'balloon'
+    let isInsideMelodyDetail = false;
+    let activeMelodyMode = 'song'; // 'song' or 'xylophone'
+    let isInsideRhymeDetail = false;
+
+    function getAudioContext() {
+      if (!activeAudioContext) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        activeAudioContext = new AudioCtx();
+      }
+      if (activeAudioContext.state === 'suspended') {
+        activeAudioContext.resume();
+      }
+      return activeAudioContext;
+    }
+
+    function playTone(type = 'chime') {
+      if (isSoundMuted) return;
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'pop') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.linearRampToValueAtTime(0.001, now + 0.09);
+          osc.start(now);
+          osc.stop(now + 0.09);
+        } else if (type === 'chime') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+          osc.start(now);
+          osc.stop(now + 0.4);
+        } else if (type === 'fanfare') {
+          [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+            const o = ctx.createOscillator();
+            const g = ctx.createGain();
+            o.type = 'triangle';
+            o.frequency.setValueAtTime(f, now + i * 0.08);
+            g.gain.setValueAtTime(0.2, now + i * 0.08);
+            g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.3);
+            o.connect(g);
+            g.connect(ctx.destination);
+            o.start(now + i * 0.08);
+            o.stop(now + i * 0.08 + 0.3);
+          });
+        }
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    function playFrequency(freq) {
+      if (isSoundMuted) return;
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        
+        // Rich dual-oscillator acoustic chime simulation
+        const osc = ctx.createOscillator();
+        const overtone = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const overtoneGain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+
+        overtone.type = 'triangle';
+        overtone.frequency.setValueAtTime(freq * 2, now); // 2nd harmonic for bell brightness
+
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.95);
+
+        overtoneGain.gain.setValueAtTime(0.12, now);
+        overtoneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+
+        osc.connect(gain);
+        overtone.connect(overtoneGain);
+        gain.connect(ctx.destination);
+        overtoneGain.connect(ctx.destination);
+
+        osc.start(now);
+        overtone.start(now);
+        osc.stop(now + 0.95);
+        overtone.stop(now + 0.45);
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    // Play a sustained acoustic chime note mapped to rhyme singing syllables
+    function playSingingChimeNote(freq, duration = 0.5) {
+      if (isSoundMuted) return;
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const sub = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+
+        sub.type = 'sine';
+        sub.frequency.setValueAtTime(freq / 2, now); // Warm foundational bass
+
+        gain.gain.setValueAtTime(0.28, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration + 0.3);
+
+        osc.connect(gain);
+        sub.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(now);
+        sub.start(now);
+        osc.stop(now + duration + 0.3);
+        sub.stop(now + duration + 0.3);
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    // Load and prioritize clear, natural women's voices & native Tamil voice
+    function initSpeechVoices() {
+      if (!('speechSynthesis' in window)) return;
+      
+      const loadVoices = () => {
+        const voices = window.speechSynthesis.getVoices();
+        if (!voices || voices.length === 0) return;
+
+        // 1. Prioritize native Tamil voice (ta-IN or language starting with 'ta')
+        preferredTamilVoice = voices.find(v => v.lang === 'ta-IN' || v.lang.startsWith('ta') || v.name.toLowerCase().includes('tamil'));
+
+        // 2. Female voice keywords prioritized for friendly, maternal, educator tones
+        const femaleKeywords = [
+          'samantha', 'victoria', 'karen', 'zira', 'susan', 
+          'female', 'google us english', 'ava', 'allison', 
+          'agnes', 'moira', 'tessa', 'en-us-wavenet-f', 'en-us-neural2-f'
+        ];
+
+        preferredFemaleVoice = voices.find(v => {
+          const name = (v.name + " " + (v.voiceURI || "")).toLowerCase();
+          const isEn = v.lang.startsWith('en');
+          return isEn && femaleKeywords.some(keyword => name.includes(keyword));
+        });
+
+        if (!preferredFemaleVoice) {
+          preferredFemaleVoice = voices.find(v => v.lang.startsWith('en-US')) || voices.find(v => v.lang.startsWith('en'));
+        }
+      };
+
+      loadVoices();
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+      }
+    }
+
+    // Adjusted rate to a calmer, child-appropriate pace (default 0.70x instead of fast adult speech)
+    function speakAudio(text, rate = 0.70, pitchMod = 1.15, langCode = 'en-US') {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const ut = new SpeechSynthesisUtterance(text);
+        ut.rate = rate; // Slower, clearer articulation for toddlers
+        ut.pitch = pitchMod; 
+        ut.lang = langCode;
+        
+        if (langCode.startsWith('ta')) {
+          if (preferredTamilVoice) {
+            ut.voice = preferredTamilVoice;
+          }
+        } else if (preferredFemaleVoice) {
+          ut.voice = preferredFemaleVoice;
+        }
+
+        window.speechSynthesis.speak(ut);
+      }
+    }
+
+    function triggerCelebration() {
+      playTone('fanfare');
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 40,
+          spread: 55,
+          origin: { y: 0.6 },
+          colors: ['#FFDE59', '#1DD1A1', '#48DBFB', '#FF6B81']
+        });
+      }
+      starsCount += 2;
+      document.getElementById('starCounter').innerText = starsCount;
+      const won = document.getElementById('statGamesWon');
+      if (won) won.innerText = parseInt(won.innerText) + 1;
+    }
+
+    function toggleMute() {
+      isSoundMuted = !isSoundMuted;
+      const btn = document.getElementById('soundToggleBtn');
+      if (isSoundMuted) {
+        btn.innerHTML = '<i class="fa-solid fa-volume-xmark text-rose-500"></i>';
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      } else {
+        btn.innerHTML = '<i class="fa-solid fa-volume-high text-sky-600"></i>';
+        playTone('chime');
+      }
+    }
+
+    /* ----------------------------------------------------
+       MODULE 4: MOBILE MUSIC & MELODY STUDIO
+    ---------------------------------------------------- */
+    function renderMusic(container) {
+      const activeSong = MELODY_SONG_LIBRARY[activeMelodySongIdx];
+
+      let html = `
+        <div class="space-y-3">
+          
+          <!-- Song Jukebox Picker -->
+          <div class="bg-white rounded-3xl p-3.5 border-2 border-purple-200 shadow-xs">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-1.5">
+                <span class="text-xl">🎶</span>
+                <span class="text-xs font-bold text-slate-800">Nursery Songs Library</span>
+              </div>
+              <button onclick="toggleMelodySongPlay()" class="px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 mobile-touch-bounce shadow-xs ${isMelodyPlaying ? 'bg-rose-500 text-white' : 'bg-purple-600 text-white'}">
+                <i class="fa-solid ${isMelodyPlaying ? 'fa-pause' : 'fa-play'} text-[11px]"></i>
+                <span>${isMelodyPlaying ? 'Pause Song' : 'Listen Song'}</span>
+              </button>
+            </div>
+
+            <!-- Song Pills Grid -->
+            <div class="grid grid-cols-2 gap-2">
+              ${MELODY_SONG_LIBRARY.map((song, idx) => `
+                <button onclick="selectMelodySong(${idx})" 
+                        class="p-2 rounded-2xl border-2 text-left flex items-center gap-2 transition mobile-touch-bounce ${
+                          idx === activeMelodySongIdx 
+                            ? 'bg-purple-100 border-purple-400 text-purple-950 font-bold' 
+                            : 'bg-purple-50/40 border-purple-100 text-slate-700'
+                        }">
+                  <span class="text-xl">${song.icon}</span>
+                  <div class="overflow-hidden">
+                    <div class="text-[11px] font-bold truncate">${song.name}</div>
+                    <span class="text-[9px] text-purple-700 font-semibold">${song.notes.length} notes</span>
+                  </div>
+                </button>
+              `).join('')}
+            </div>
+
+            <!-- Interactive Note Guide Prompter -->
+            <div class="mt-2.5 p-2 bg-purple-50/80 rounded-2xl border border-purple-200/80 text-center">
+              <span class="text-[10px] font-bold text-purple-800 uppercase tracking-wider block mb-1">Play Along Notes:</span>
+              <div class="flex flex-wrap justify-center gap-1">
+                ${activeSong.notes.map((note, nIdx) => `
+                  <span id="melody-guide-${nIdx}" class="w-6 h-6 rounded-lg bg-white border border-purple-200 text-purple-900 font-bold text-[11px] flex items-center justify-center shadow-2xs">
+                    ${note.n}
+                  </span>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Xylophone Chime Studio -->
+          <div class="bg-white rounded-3xl p-4 border-2 border-purple-200 shadow-sm text-center">
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <h3 class="text-sm font-bold text-slate-800 text-left">🎹 Rainbow Chime Bars</h3>
+                <p class="text-[11px] text-slate-400 text-left">Tap keys to compose melodies</p>
+              </div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                8 Notes Diatonic
+              </span>
+            </div>
+
+            <!-- Chime Bar Keys with Note Labels -->
+            <div class="flex items-end justify-center gap-1.5 py-4 px-1 bg-gradient-to-b from-purple-50/60 to-purple-100/40 rounded-2xl border border-purple-100 relative">
+              ${CHIME_BARS.map((c, i) => `
+                <button id="chime-key-${c.note.replace('²', '2')}"
+                        onclick="playChimeWithEffect(${c.freq}, '${c.note}', this)" 
+                        style="height: ${145 - (i * 7)}px;"
+                        class="kid-card-3d flex-1 max-w-[42px] rounded-2xl ${c.bg} shadow-sm text-white flex flex-col justify-between items-center py-2.5 transition-all">
+                  <span class="w-2 h-2 rounded-full bg-white/70"></span>
+                  <div class="text-center">
+                    <span class="font-bold text-xs block">${c.note}</span>
+                    <span class="text-[9px] opacity-80">${c.label}</span>
+                  </div>
+                  <span class="w-2 h-2 rounded-full bg-white/70"></span>
+                </button>
+              `).join('')}
+            </div>
+
+            <p class="text-[10px] text-slate-400 font-medium mt-2">
+              Tip: Tap along the notes above to play real nursery tunes!
+            </p>
+          </div>
+
+        </div>
+      `;
+      container.innerHTML = html;
+    }
+
+    function selectMelodySong(idx) {
+      stopMelodyPlayback();
+      activeMelodySongIdx = idx;
+      playTone('pop');
+      renderMusic(document.getElementById('appViewport'));
+    }
+
+    function stopMelodyPlayback() {
+      isMelodyPlaying = false;
+      melodyPlaybackTimeouts.forEach(t => clearTimeout(t));
+      melodyPlaybackTimeouts = [];
+      clearMelodyHighlights();
+    }
+
+    function clearMelodyHighlights() {
+      const activeSong = MELODY_SONG_LIBRARY[activeMelodySongIdx];
+      if (!activeSong) return;
+      activeSong.notes.forEach((_, idx) => {
+        const el = document.getElementById(`melody-guide-${idx}`);
+        if (el) el.className = "w-6 h-6 rounded-lg bg-white border border-purple-200 text-purple-900 font-bold text-[11px] flex items-center justify-center shadow-2xs";
+      });
+      CHIME_BARS.forEach(c => {
+        const keyEl = document.getElementById(`chime-key-${c.note.replace('²', '2')}`);
+        if (keyEl) keyEl.classList.remove('ring-4', 'ring-amber-300', 'scale-105');
+      });
+    }
+
+    function toggleMelodySongPlay() {
+      if (isMelodyPlaying) {
+        stopMelodyPlayback();
+        renderMusic(document.getElementById('appViewport'));
+      } else {
+        isMelodyPlaying = true;
+        renderMusic(document.getElementById('appViewport'));
+        playMelodySongSequence();
+      }
+    }
+
+    function playMelodySongSequence() {
+      const song = MELODY_SONG_LIBRARY[activeMelodySongIdx];
+      if (!song || !isMelodyPlaying) return;
+
+      let accumulatedDelay = 200;
+
+      song.notes.forEach((item, idx) => {
+        const t = setTimeout(() => {
+          if (!isMelodyPlaying) return;
+
+          // Clear previous prompt note highlights
+          clearMelodyHighlights();
+
+          // Highlight note in prompter
+          const guideEl = document.getElementById(`melody-guide-${idx}`);
+          if (guideEl) {
+            guideEl.className = "w-6 h-6 rounded-lg bg-amber-300 border-2 border-amber-500 text-amber-950 font-bold text-[11px] flex items-center justify-center scale-125 shadow-md transition-all";
+          }
+
+          // Visually strike the xylophone key
+          const keyEl = document.getElementById(`chime-key-${item.n.replace('²', '2')}`);
+          if (keyEl) {
+            keyEl.classList.add('ring-4', 'ring-amber-300', 'scale-105');
+            setTimeout(() => {
+              if (keyEl) keyEl.classList.remove('ring-4', 'ring-amber-300', 'scale-105');
+            }, item.d * 0.7);
+          }
+
+          // Play acoustic tone
+          playFrequency(item.f);
+
+          // If last note completed, celebrate
+          if (idx === song.notes.length - 1) {
+            setTimeout(() => {
+              if (isMelodyPlaying) {
+                triggerCelebration();
+                stopMelodyPlayback();
+                renderMusic(document.getElementById('appViewport'));
+              }
+            }, item.d + 300);
+          }
+        }, accumulatedDelay);
+
+        melodyPlaybackTimeouts.push(t);
+        accumulatedDelay += item.d;
+      });
+    }
+
+    function playChimeWithEffect(freq, noteName, btn) {
+      playFrequency(freq);
+      if (btn) {
+        btn.classList.add('ring-4', 'ring-white', 'scale-95');
+        setTimeout(() => btn.classList.remove('ring-4', 'ring-white', 'scale-95'), 180);
+      }
+    }
+
+    function toggleAgeDropdown() {
+      playTone('pop');
+      const dropdown = document.getElementById('ageFilterDropdown');
+      const chevron = document.getElementById('ageDropdownChevron');
+      if (!dropdown) return;
+
+      const isHidden = dropdown.classList.contains('hidden');
+      if (isHidden) {
+        dropdown.classList.remove('hidden');
+        if (chevron) chevron.classList.add('rotate-180');
+      } else {
+        dropdown.classList.add('hidden');
+        if (chevron) chevron.classList.remove('rotate-180');
+      }
+    }
+
+    function selectPhaseFromDropdown(p) {
+      currentPhase = p;
+      isInsideCardDetail = false; // Reset to category menu on age switch
+      playTone('pop');
+
+      // Update button visual state
+      const config = PHASE_CONFIG[p];
+      if (config) {
+        document.getElementById('currentAgeIcon').innerText = config.icon;
+        document.getElementById('currentAgeLabel').innerText = config.label;
+      }
+
+      // Update dropdown item states
+      ['phase1', 'phase2', 'phase3'].forEach(phaseKey => {
+        const itemBtn = document.getElementById(`drop-${phaseKey}`);
+        const checkIcon = itemBtn ? itemBtn.querySelector('i') : null;
+        if (itemBtn) {
+          if (phaseKey === p) {
+            itemBtn.className = "w-full text-left px-2.5 py-2 rounded-xl text-xs font-bold flex items-center justify-between transition bg-amber-100 text-amber-950 my-0.5";
+            if (checkIcon) checkIcon.classList.remove('hidden');
+          } else {
+            itemBtn.className = "w-full text-left px-2.5 py-2 rounded-xl text-xs font-bold flex items-center justify-between transition hover:bg-slate-100 text-slate-700 my-0.5";
+            if (checkIcon) checkIcon.classList.add('hidden');
+          }
+        }
+      });
+
+      // Close dropdown
+      const dd = document.getElementById('ageFilterDropdown');
+      const chevron = document.getElementById('ageDropdownChevron');
+      if (dd) dd.classList.add('hidden');
+      if (chevron) chevron.classList.remove('rotate-180');
+
+      renderView();
+    }
+
+    function switchPhase(p) {
+      selectPhaseFromDropdown(p);
+    }
+
+    function switchTab(t) {
+      currentTab = t;
+      if (t === 'flashcards') {
+        isInsideCardDetail = false;
+      }
+      // Reset full screen details when switching tabs
+      isInsideStoryDetail = false;
+      isInsideGameDetail = false;
+      isInsideMelodyDetail = false;
+      isInsideRhymeDetail = false;
+      stopMelodyPlayback();
+      stopKaraoke();
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+
+      // Ensure header and nav dock are shown when switching tabs
+      const header = document.getElementById('mobileAppHeader');
+      const bottomNav = document.getElementById('mobileBottomNav');
+      if (header) header.classList.remove('hidden');
+      if (bottomNav) bottomNav.classList.remove('hidden');
+
+      playTone('pop');
+
+      document.querySelectorAll('.dock-btn').forEach(btn => {
+        btn.className = "dock-btn flex-1 flex flex-col items-center py-1 rounded-2xl transition text-slate-400 font-bold mobile-touch-bounce";
+      });
+      const active = document.getElementById(`tab-${t}`);
+      if (active) {
+        const theme = THEMES[activeThemeKey] || THEMES.safari;
+        active.className = `dock-btn flex-1 flex flex-col items-center py-1 rounded-2xl transition font-bold mobile-touch-bounce ${theme.activeTabBg}`;
+      }
+
+      renderView();
+    }
+
+    function renderView() {
+      const container = document.getElementById('appViewport');
+      if (currentTab === 'flashcards') renderFlashcards(container);
+      else if (currentTab === 'stories') renderStories(container);
+      else if (currentTab === 'games') renderGames(container);
+      else if (currentTab === 'music') renderMusic(container);
+      else if (currentTab === 'rhymes') renderRhymes(container);
+      else if (currentTab === 'habits') renderHabits(container);
+    }
+
+    /* ----------------------------------------------------
+       MODULE 4: MOBILE MUSIC & MELODY STUDIO
+    ---------------------------------------------------- */
+    function renderMusic(container) {
+      const theme = THEMES[activeThemeKey] || THEMES.safari;
+      const header = document.getElementById('mobileAppHeader');
+      const bottomNav = document.getElementById('mobileBottomNav');
+
+      // VIEW A: MUSIC TILES HUB
+      if (!isInsideMelodyDetail) {
+        if (header) header.classList.remove('hidden');
+        if (bottomNav) bottomNav.classList.remove('hidden');
+
+        let html = `
+          <div class="space-y-3 pb-2">
+            <div class="grid grid-cols-2 gap-2.5">
+              
+              <!-- Tile 1: Rainbow Chime Bars Free Play -->
+              <button onclick="openMelodyFreePlay()" 
+                      class="kid-card-3d p-3.5 rounded-3xl border-2 ${theme.cardBorder} bg-white flex flex-col items-center text-center transition mobile-touch-bounce shadow-xs">
+                <div class="text-5xl my-1.5 drop-shadow-sm select-none">🎹</div>
+                <div class="text-xs font-bold text-slate-800 line-clamp-1 mt-1">Rainbow Chimes</div>
+                <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-1">Free-play 8 notes</p>
+                <span class="mt-2 text-[10px] font-bold ${theme.badgeBg} px-2 py-0.5 rounded-full border">
+                  8 Diatonic Notes
+                </span>
+              </button>
+
+              <!-- Nursery Song Tiles -->
+              ${MELODY_SONG_LIBRARY.map((song, idx) => `
+                <button onclick="openMelodySongDetail(${idx})" 
+                        class="kid-card-3d p-3.5 rounded-3xl border-2 ${theme.cardBorder} bg-white flex flex-col items-center text-center transition mobile-touch-bounce shadow-xs">
+                  <div class="text-5xl my-1.5 drop-shadow-sm select-none">${song.icon}</div>
+                  <div class="text-xs font-bold text-slate-800 line-clamp-1 mt-1">${song.name}</div>
+                  <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-1">Listen & play notes</p>
+                  <span class="mt-2 text-[10px] font-bold ${theme.badgeBg} px-2 py-0.5 rounded-full border">
+                    ${song.notes.length} Notes
+                  </span>
+                </button>
+              `).join('')}
+
+            </div>
+          </div>
+        `;
+        container.innerHTML = html;
+        return;
+      }
+
+      // VIEW B: FULL SCREEN DETAILED MELODY STUDIO
+      if (header) header.classList.add('hidden');
+      if (bottomNav) bottomNav.classList.add('hidden');
+
+      const activeSong = MELODY_SONG_LIBRARY[activeMelodySongIdx];
+
+      let html = `
+        <div class="flex flex-col h-full justify-between space-y-2.5 py-1">
+          
+          <!-- Back Button & Studio Header -->
+          <div class="shrink-0 flex items-center justify-between gap-2 px-1">
+            <button onclick="backToMelodyHub()" class="px-3.5 py-2 rounded-2xl text-xs font-bold bg-white text-slate-800 border-2 border-slate-300 flex items-center gap-2 mobile-touch-bounce shadow-sm">
+              <i class="fa-solid fa-arrow-left text-sm text-slate-700"></i>
+              <span>Back</span>
+            </button>
+
+            <span class="text-xs font-bold text-slate-900 bg-white/90 px-3.5 py-1.5 rounded-2xl border ${theme.cardBorder} truncate max-w-[210px] shadow-xs">
+              ${activeMelodyMode === 'freeplay' ? '🎹 Free Play Chimes' : `${activeSong.icon} ${activeSong.name}`}
+            </span>
+          </div>
+
+          <!-- FULL-SCREEN MELODY STUDIO CANVAS -->
+          <div class="flex-1 bg-gradient-to-b ${theme.cardGradient} rounded-3xl p-4 border-2 ${theme.cardBorder} shadow-sm flex flex-col justify-between relative overflow-hidden">
+            
+            ${activeMelodyMode === 'song' ? `
+              <!-- Song Mode Prompter -->
+              <div class="bg-white/90 rounded-2xl p-3 border ${theme.cardBorder} text-center shadow-xs">
+                <div class="flex items-center justify-between mb-1.5">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-2xl">${activeSong.icon}</span>
+                    <span class="text-xs font-bold text-slate-800">${activeSong.name}</span>
+                  </div>
+                  <button onclick="toggleMelodySongPlay()" class="px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 mobile-touch-bounce shadow-xs ${isMelodyPlaying ? 'bg-rose-500 text-white' : `${theme.btnPrimary}`}">
+                    <i class="fa-solid ${isMelodyPlaying ? 'fa-pause' : 'fa-play'} text-[11px]"></i>
+                    <span>${isMelodyPlaying ? 'Pause' : 'Play Song'}</span>
+                  </button>
+                </div>
+
+                <!-- Guided Notes Indicator -->
+                <div class="p-2 bg-slate-50/80 rounded-xl border border-slate-200/80">
+                  <span class="text-[10px] font-bold text-slate-600 uppercase tracking-wider block mb-1">Play Along Notes:</span>
+                  <div class="flex flex-wrap justify-center gap-1">
+                    ${activeSong.notes.map((note, nIdx) => `
+                      <span id="melody-guide-${nIdx}" class="w-6 h-6 rounded-lg bg-white border border-slate-200 text-slate-800 font-bold text-[11px] flex items-center justify-center shadow-2xs">
+                        ${note.n}
+                      </span>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+            ` : `
+              <!-- Free Play Badge -->
+              <div class="text-center py-2">
+                <span class="text-4xl">🎼</span>
+                <h3 class="text-lg font-bold text-slate-800 mt-1">Rainbow Chimes Free Play</h3>
+                <p class="text-xs text-slate-500">Tap chime bars to compose your own tunes!</p>
+              </div>
+            `}
+
+            <!-- Giant Chime Bar Keys -->
+            <div class="my-auto py-2">
+              <div class="flex items-end justify-center gap-1.5 py-4 px-1 bg-white/70 rounded-2xl border ${theme.cardBorder} relative">
+                ${CHIME_BARS.map((c, i) => `
+                  <button id="chime-key-${c.note.replace('²', '2')}"
+                          onclick="playChimeWithEffect(${c.freq}, '${c.note}', this)" 
+                          style="height: ${175 - (i * 9)}px;"
+                          class="kid-card-3d flex-1 max-w-[44px] rounded-2xl ${c.bg} shadow-sm text-white flex flex-col justify-between items-center py-3 transition-all">
+                    <span class="w-2.5 h-2.5 rounded-full bg-white/70"></span>
+                    <div class="text-center">
+                      <span class="font-black text-sm block">${c.note}</span>
+                      <span class="text-[10px] opacity-80 font-bold">${c.label}</span>
+                    </div>
+                    <span class="w-2.5 h-2.5 rounded-full bg-white/70"></span>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="pt-2">
+              ${activeMelodyMode === 'song' ? `
+                <div class="flex items-center justify-between gap-3">
+                  <button onclick="prevMelodySong()" class="flex-1 py-3 bg-white text-slate-700 font-bold text-xs rounded-2xl border-2 border-slate-200 flex items-center justify-center gap-2 shadow-xs mobile-touch-bounce">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Prev Song</span>
+                  </button>
+                  <button onclick="nextMelodySong()" class="flex-1 py-3 ${theme.btnPrimary} font-bold text-xs rounded-2xl border-2 flex items-center justify-center gap-2 shadow-sm mobile-touch-bounce">
+                    <span>Next Song</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                  </button>
+                </div>
+              ` : `
+                <button onclick="backToMelodyHub()" class="w-full py-3 bg-white text-slate-800 font-bold text-xs rounded-2xl border-2 border-slate-200 flex items-center justify-center gap-2 shadow-xs mobile-touch-bounce">
+                  <span>Back to Song List</span>
+                </button>
+              `}
+            </div>
+
+          </div>
+
+        </div>
+      `;
+      container.innerHTML = html;
+    }
+
+    function openMelodySongDetail(idx) {
+      stopMelodyPlayback();
+      activeMelodySongIdx = idx;
+      activeMelodyMode = 'song';
+      isInsideMelodyDetail = true;
+      playTone('pop');
+      renderMusic(document.getElementById('appViewport'));
+    }
+
+    function openMelodyFreePlay() {
+      stopMelodyPlayback();
+      activeMelodyMode = 'freeplay';
+      isInsideMelodyDetail = true;
+      playTone('pop');
+      renderMusic(document.getElementById('appViewport'));
+    }
+
+    function backToMelodyHub() {
+      stopMelodyPlayback();
+      isInsideMelodyDetail = false;
+      playTone('pop');
+      renderMusic(document.getElementById('appViewport'));
+    }
+
+    function nextMelodySong() {
+      stopMelodyPlayback();
+      activeMelodySongIdx = (activeMelodySongIdx + 1) % MELODY_SONG_LIBRARY.length;
+      playTone('pop');
+      renderMusic(document.getElementById('appViewport'));
+    }
+
+    function prevMelodySong() {
+      stopMelodyPlayback();
+      activeMelodySongIdx = (activeMelodySongIdx - 1 + MELODY_SONG_LIBRARY.length) % MELODY_SONG_LIBRARY.length;
+      playTone('pop');
+      renderMusic(document.getElementById('appViewport'));
+    }
+
+    function selectMelodySong(idx) {
+      openMelodySongDetail(idx);
+    }
+
+    function selectRhyme(idx) {
+      stopKaraoke();
+      activeRhymeIdx = idx;
+      playTone('pop');
+      renderRhymes(document.getElementById('appViewport'));
+    }
+
+    function prevRhyme() {
+      stopKaraoke();
+      activeRhymeIdx = (activeRhymeIdx - 1 + RHYMES_DATABASE.length) % RHYMES_DATABASE.length;
+      playTone('pop');
+      renderRhymes(document.getElementById('appViewport'));
+    }
+
+    function nextRhyme() {
+      stopKaraoke();
+      activeRhymeIdx = (activeRhymeIdx + 1) % RHYMES_DATABASE.length;
+      playTone('pop');
+      renderRhymes(document.getElementById('appViewport'));
+    }
+
+    function stopKaraoke() {
+      isKaraokePlaying = false;
+      karaokeTimelineTimeouts.forEach(t => clearTimeout(t));
+      karaokeTimelineTimeouts = [];
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      clearKaraokeHighlights();
+    }
+
+    function clearKaraokeHighlights() {
+      const rhyme = RHYMES_DATABASE[activeRhymeIdx];
+      if (!rhyme) return;
+      rhyme.lines.forEach((l, lIdx) => {
+        l.words.forEach((_, wIdx) => {
+          const el = document.getElementById(`kword-${lIdx}-${wIdx}`);
+          if (el) {
+            el.className = "px-2 py-1 rounded-xl text-sm font-bold text-slate-700 transition-all duration-150 inline-block cursor-pointer";
+          }
+        });
+      });
+    }
+
+    function replayKaraoke() {
+      stopKaraoke();
+      toggleKaraokePlay();
+    }
+
+    function toggleKaraokePlay() {
+      if (isKaraokePlaying) {
+        stopKaraoke();
+        renderRhymes(document.getElementById('appViewport'));
+      } else {
+        isKaraokePlaying = true;
+        renderRhymes(document.getElementById('appViewport'));
+        playSingingRhymeSequence();
+      }
+    }
+
+    // Melodic Syllable Singing Engine: sings note-by-note with pitch modulation
+    function playSingingRhymeSequence() {
+      const rhyme = RHYMES_DATABASE[activeRhymeIdx];
+      if (!rhyme || !isKaraokePlaying) return;
+
+      playTone('fanfare');
+
+      // Build syllable timeline with musical frequencies & pitch heights
+      const timeline = [];
+      let delay = 350;
+
+      rhyme.lines.forEach((line, lIdx) => {
+        line.words.forEach((word, wIdx) => {
+          const noteFreq = (line.notes && line.notes[wIdx]) ? line.notes[wIdx] : 329.63;
+          const pitchVal = (line.pitches && line.pitches[wIdx]) ? line.pitches[wIdx] : 1.25;
+          timeline.push({ lIdx, wIdx, word, noteFreq, pitchVal, delay });
+          delay += 520; // Natural nursery singing duration per word
+        });
+        delay += 320; // Natural breath pause between lines
+      });
+
+      // Synchronously trigger each sung word with musical chime backing
+      timeline.forEach((step, idx) => {
+        const t = setTimeout(() => {
+          if (!isKaraokePlaying) return;
+
+          // Clear previous highlights
+          clearKaraokeHighlights();
+
+          // Highlight singing word
+          const activeEl = document.getElementById(`kword-${step.lIdx}-${step.wIdx}`);
+          if (activeEl) {
+            activeEl.className = "px-2.5 py-1 rounded-xl text-base font-bold bg-amber-300 text-amber-950 scale-125 shadow-md border-2 border-amber-500 transition-all duration-150 inline-block";
+          }
+
+          // 1. Play sustained acoustic chime note at the syllable's musical pitch
+          playSingingChimeNote(step.noteFreq, 0.48);
+
+          // 2. Vocalize syllable at matching musical pitch
+          singVoiceSyllable(step.word, step.pitchVal, rhyme.lang);
+
+          // Celebrate at the end of the song
+          if (idx === timeline.length - 1) {
+            setTimeout(() => {
+              if (isKaraokePlaying) {
+                triggerCelebration();
+                stopKaraoke();
+                renderRhymes(document.getElementById('appViewport'));
+              }
+            }, 800);
+          }
+        }, step.delay);
+
+        karaokeTimelineTimeouts.push(t);
+      });
+    }
+
+    // Sings an isolated word with melodic pitch tuning
+    function singVoiceSyllable(word, musicalPitch = 1.2, langCode = 'en-US') {
+      if (!('speechSynthesis' in window)) return;
+      
+      const cleanWord = word.replace(/[.,!]/g, '');
+      const ut = new SpeechSynthesisUtterance(cleanWord);
+      
+      ut.rate = 0.76;
+      ut.pitch = musicalPitch; // Modulated to match musical note scale
+      ut.lang = langCode || 'en-US';
+
+      if (langCode === 'ta-IN') {
+        if (preferredTamilVoice) ut.voice = preferredTamilVoice;
+      } else if (preferredFemaleVoice) {
+        ut.voice = preferredFemaleVoice;
+      }
+
+      window.speechSynthesis.speak(ut);
+    }
+
+    function singSingleKaraokeWord(word, noteFreq, pitchVal, lang = 'en-US') {
+      playSingingChimeNote(noteFreq, 0.5);
+      singVoiceSyllable(word, pitchVal, lang);
+    }
+
+    /* ----------------------------------------------------
+       MODULE 5: RHYMES KARAOKE SING-ALONG (TILES & FULL SCREEN)
+    ---------------------------------------------------- */
+    let karaokeTimelineTimeouts = [];
+
+    function renderRhymes(container) {
+      const theme = THEMES[activeThemeKey] || THEMES.safari;
+      const header = document.getElementById('mobileAppHeader');
+      const bottomNav = document.getElementById('mobileBottomNav');
+
+      // VIEW A: RHYMES MENU TILES HUB
+      if (!isInsideRhymeDetail) {
+        if (header) header.classList.remove('hidden');
+        if (bottomNav) bottomNav.classList.remove('hidden');
+
+        let html = `
+          <div class="space-y-3 pb-2">
+            <div class="grid grid-cols-2 gap-2.5">
+              ${RHYMES_DATABASE.map((rhyme, idx) => `
+                <button onclick="openRhymeDetail(${idx})" 
+                        class="kid-card-3d p-3.5 rounded-3xl border-2 ${theme.cardBorder} bg-white flex flex-col items-center text-center transition mobile-touch-bounce shadow-xs">
+                  <div class="text-5xl my-1.5 drop-shadow-sm select-none">${rhyme.coverEmoji}</div>
+                  <div class="text-xs font-bold text-slate-800 line-clamp-1 mt-1">${rhyme.title}</div>
+                  <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-1">${rhyme.lang === 'ta-IN' ? 'Tamil Nursery Rhyme' : 'English Sing-Along'}</p>
+                  <span class="mt-2 text-[10px] font-bold ${theme.badgeBg} px-2 py-0.5 rounded-full border">
+                    ${rhyme.lines.length} Verses
+                  </span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+        container.innerHTML = html;
+        return;
+      }
+
+      // VIEW B: FULL SCREEN RHYME KARAOKE PLAYER
+      if (header) header.classList.add('hidden');
+      if (bottomNav) bottomNav.classList.add('hidden');
+
+      const rhyme = RHYMES_DATABASE[activeRhymeIdx];
+
+      let html = `
+        <div class="flex flex-col h-full justify-between space-y-2.5 py-1">
+          
+          <!-- Back Button & Header -->
+          <div class="shrink-0 flex items-center justify-between gap-2 px-1">
+            <button onclick="backToRhymesHub()" class="px-3.5 py-2 rounded-2xl text-xs font-bold bg-white text-slate-800 border-2 border-slate-300 flex items-center gap-2 mobile-touch-bounce shadow-sm">
+              <i class="fa-solid fa-arrow-left text-sm text-slate-700"></i>
+              <span>Back</span>
+            </button>
+
+            <span class="text-xs font-bold text-slate-900 bg-white/90 px-3.5 py-1.5 rounded-2xl border ${theme.cardBorder} truncate max-w-[210px] shadow-xs">
+              ${rhyme.coverEmoji} ${rhyme.title}
+            </span>
+          </div>
+
+          <!-- FULL-SCREEN KARAOKE CANVAS -->
+          <div class="flex-1 bg-gradient-to-b ${theme.cardGradient} rounded-3xl p-5 border-2 ${theme.cardBorder} shadow-sm flex flex-col justify-between relative overflow-hidden">
+            
+            <!-- Top Bar: Title & Mode Badge -->
+            <div class="flex items-center justify-between border-b ${theme.cardBorder} pb-2.5 shrink-0">
+              <div class="flex items-center gap-2">
+                <span class="text-3xl pulse-glow">${rhyme.coverEmoji}</span>
+                <div>
+                  <h3 class="text-sm font-bold text-slate-900 leading-tight">${rhyme.title}</h3>
+                  <span class="text-[10px] font-bold ${theme.badgeBg} px-2 py-0.5 rounded-full border flex items-center gap-1 inline-flex mt-0.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
+                    ${rhyme.lang === 'ta-IN' ? 'பாடல் முறை (Singing Mode)' : 'Melodic Singing Mode'}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Animated Singer Note Indicator -->
+              <div id="singingVisualizer" class="flex items-center gap-1 text-rose-500 ${isKaraokePlaying ? 'animate-bounce' : ''}">
+                <i class="fa-solid fa-music text-lg"></i>
+              </div>
+            </div>
+
+            <!-- Karaoke Lyrics Canvas -->
+            <div id="karaokeLyricsBox" class="my-auto py-3 space-y-3.5 text-center">
+              ${rhyme.lines.map((line, lIdx) => `
+                <div class="flex flex-wrap justify-center gap-1.5 transition-all duration-200" id="karaoke-line-${lIdx}">
+                  ${line.words.map((word, wIdx) => {
+                    const noteFreq = line.notes && line.notes[wIdx] ? line.notes[wIdx] : 329.63;
+                    const pitchVal = line.pitches && line.pitches[wIdx] ? line.pitches[wIdx] : 1.2;
+                    return `
+                      <span id="kword-${lIdx}-${wIdx}" 
+                            onclick="singSingleKaraokeWord('${word.replace(/[.,!]/g, '')}', ${noteFreq}, ${pitchVal}, '${rhyme.lang}')"
+                            class="px-2 py-1 rounded-xl text-sm sm:text-base font-bold text-slate-700 transition-all duration-150 inline-block cursor-pointer hover:bg-white/60">
+                        ${word}
+                      </span>
+                    `;
+                  }).join('')}
+                </div>
+              `).join('')}
+            </div>
+
+            <!-- Bottom Karaoke Singing Controls -->
+            <div class="pt-3 border-t ${theme.cardBorder} shrink-0">
+              <div class="flex items-center justify-between gap-2.5">
+                
+                <button onclick="prevRhyme()" class="px-3.5 py-3 rounded-2xl bg-white border-2 border-slate-200 text-slate-700 font-bold text-xs mobile-touch-bounce shadow-xs">
+                  <i class="fa-solid fa-backward-step"></i>
+                </button>
+
+                <!-- Big Karaoke Sing / Pause Button -->
+                <button onclick="toggleKaraokePlay()" class="flex-1 py-3.5 rounded-2xl ${theme.btnPrimary} font-bold text-sm flex items-center justify-center gap-2 shadow-md mobile-touch-bounce">
+                  <i class="fa-solid ${isKaraokePlaying ? 'fa-pause' : 'fa-microphone-lines'} text-base"></i>
+                  <span>${isKaraokePlaying ? 'Pause' : 'Sing in Tune! 🎵'}</span>
+                </button>
+
+                <button onclick="replayKaraoke()" class="px-3.5 py-3 rounded-2xl bg-white border-2 border-slate-200 text-slate-700 font-bold text-xs mobile-touch-bounce shadow-xs" title="Restart">
+                  <i class="fa-solid fa-rotate-left"></i>
+                </button>
+
+                <button onclick="nextRhyme()" class="px-3.5 py-3 rounded-2xl bg-white border-2 border-slate-200 text-slate-700 font-bold text-xs mobile-touch-bounce shadow-xs">
+                  <i class="fa-solid fa-forward-step"></i>
+                </button>
+
+              </div>
+
+              <p class="text-[11px] text-center text-slate-500 font-medium mt-2">
+                🎶 Sings along with chime notes on every syllable!
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+      `;
+      container.innerHTML = html;
+    }
+
+    function openRhymeDetail(idx) {
+      stopKaraoke();
+      activeRhymeIdx = idx;
+      isInsideRhymeDetail = true;
+      playTone('pop');
+      renderRhymes(document.getElementById('appViewport'));
+    }
+
+    function backToRhymesHub() {
+      stopKaraoke();
+      isInsideRhymeDetail = false;
+      playTone('pop');
+      renderRhymes(document.getElementById('appViewport'));
+    }
+
+    function selectRhyme(idx) {
+      openRhymeDetail(idx);
+    }
+
+    /* ----------------------------------------------------
+       MODULE 1: FLASHCARDS (TILES & FULL SCREEN VIEWER)
+    ---------------------------------------------------- */
+    function renderFlashcards(container) {
+      const curriculum = CURRICULUM_DATA[currentPhase];
+      if (!curriculum) return;
+      const theme = THEMES[activeThemeKey] || THEMES.safari;
+      const header = document.getElementById('mobileAppHeader');
+      const bottomNav = document.getElementById('mobileBottomNav');
+
+      // VIEW A: CATEGORY MENU TILES HUB
+      if (!isInsideCardDetail) {
+        if (header) header.classList.remove('hidden');
+        if (bottomNav) bottomNav.classList.remove('hidden');
+
+        let html = `
+          <div class="space-y-3 pb-2">
+            <div class="grid grid-cols-2 gap-2.5">
+              ${curriculum.categories.map((cat, idx) => {
+                const previewItem = cat.items[0];
+                return `
+                  <button onclick="openCategoryCards(${idx})" 
+                          class="kid-card-3d p-3.5 rounded-3xl border-2 ${theme.cardBorder} bg-white flex flex-col items-center text-center transition mobile-touch-bounce shadow-xs">
+                    <div class="text-5xl my-1.5 drop-shadow-sm select-none">
+                      ${previewItem ? previewItem.icon : '✨'}
+                    </div>
+                    <div class="text-xs font-bold text-slate-800 line-clamp-1 mt-1">${cat.name}</div>
+                    <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-1">Explore cards & audio</p>
+                    <span class="mt-2 text-[10px] font-bold ${theme.badgeBg} px-2 py-0.5 rounded-full border">
+                      ${cat.items.length} Cards
+                    </span>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+        container.innerHTML = html;
+        return;
+      }
+
+      // VIEW B: FULL-SCREEN DETAILED CARDS VIEWER
+      // Hide top header & bottom navigation dock for true edge-to-edge focus
+      if (header) header.classList.add('hidden');
+      if (bottomNav) bottomNav.classList.add('hidden');
+
+      // Validate category index
+      if (fsDeckCategoryIdx >= curriculum.categories.length) {
+        fsDeckCategoryIdx = 0;
+      }
+      const category = curriculum.categories[fsDeckCategoryIdx];
+      
+      // Validate item index
+      if (fsDeckItemIdx >= category.items.length) {
+        fsDeckItemIdx = 0;
+      }
+      const currentItem = category.items[fsDeckItemIdx];
+      const totalItems = category.items.length;
+      const progressPercent = Math.round(((fsDeckItemIdx + 1) / totalItems) * 100);
+
+      const titleText = currentItem.number
+        ? `Number ${currentItem.number} - ${currentItem.word}`
+        : (currentItem.letter 
+          ? `${currentItem.letter} - ${currentItem.word}` 
+          : (currentItem.word || currentItem.shape || currentItem.colorName || ''));
+
+      let html = `
+        <div class="flex flex-col h-full justify-between space-y-2.5 py-1">
+          
+          <!-- Back to Topics & Category Title Bar -->
+          <div class="shrink-0 flex items-center justify-between gap-2 px-1">
+            <button onclick="backToCategoriesList()" class="px-3.5 py-2 rounded-2xl text-xs font-bold bg-white text-slate-800 border-2 border-slate-300 flex items-center gap-2 mobile-touch-bounce shadow-sm">
+              <i class="fa-solid fa-arrow-left text-sm text-slate-700"></i>
+              <span>Back</span>
+            </button>
+
+            <span class="text-xs font-bold text-slate-900 bg-white/90 px-3.5 py-1.5 rounded-2xl border ${theme.cardBorder} truncate max-w-[210px] shadow-xs">
+              ${theme.icon} ${category.name}
+            </span>
+          </div>
+
+          <!-- FULL-SCREEN IMMERSIVE CARD CONTAINER WITH ACTIVE THEME SKIN -->
+          <div class="flex-1 bg-gradient-to-b ${theme.cardGradient} rounded-3xl p-5 border-2 ${theme.cardBorder} shadow-sm flex flex-col justify-between relative overflow-hidden transition-all duration-300">
+            
+            <!-- Card Header: Voice Badge & Counter -->
+            <div class="flex items-center justify-between z-10 shrink-0">
+              <div class="inline-flex items-center gap-1.5 bg-white/80 text-slate-700 text-[11px] font-bold px-2.5 py-1 rounded-full border ${theme.cardBorder} shadow-xs">
+                <span>👩‍🏫</span>
+                <span>Teacher Voice</span>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold ${theme.badgeBg} px-3 py-0.5 rounded-full border">
+                  ${fsDeckItemIdx + 1} of ${totalItems}
+                </span>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-300/40 rounded-full h-1.5 my-2 overflow-hidden">
+              <div class="h-1.5 rounded-full transition-all duration-300" style="width: ${progressPercent}%; background-color: ${theme.accentTint};"></div>
+            </div>
+
+            <!-- Card Centerpiece: Large Icon & Letter Identification -->
+            <div class="my-auto flex flex-col items-center justify-center text-center py-2 z-10">
+              
+              <!-- Giant Number/Letter / Illustration Badge -->
+              ${currentItem.number ? `
+                <div onclick="playDeckItemVoice()" class="flex flex-col items-center justify-center my-1 cursor-pointer drop-shadow-sm hover:scale-105 active:scale-95 transition-transform duration-200">
+                  <span class="text-7xl sm:text-8xl font-black text-slate-800 tracking-tight px-6 py-2 rounded-3xl bg-white/70 border-2 ${theme.cardBorder} shadow-sm">${currentItem.number}</span>
+                  ${currentItem.countVisual ? `<div class="text-base sm:text-lg mt-2 text-slate-700 tracking-wide">${currentItem.countVisual}</div>` : ''}
+                </div>
+              ` : `
+                <div onclick="playDeckItemVoice()" class="text-8xl sm:text-9xl my-2 cursor-pointer drop-shadow-sm hover:scale-110 active:scale-95 transition-transform duration-200 pulse-glow">
+                  ${currentItem.icon}
+                </div>
+              `}
+
+              <!-- Main Alphabet Word Title -->
+              <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight leading-tight mt-1 mb-1.5">
+                ${titleText}
+              </h2>
+
+              <!-- Phonics Sound Pill (Clickable) -->
+              <div onclick="playDeckItemVoice()" class="inline-flex items-center gap-2 bg-white/90 hover:bg-white text-slate-900 px-4 py-2 rounded-2xl border-2 ${theme.cardBorder} text-sm font-bold shadow-xs my-2 mobile-touch-bounce cursor-pointer">
+                <i class="fa-solid fa-volume-high text-sm" style="color: ${theme.accentTint};"></i>
+                <span>Sound:</span>
+                <span class="font-bold tracking-wider">${currentItem.phonics}</span>
+              </div>
+
+              <!-- Conversational Audio Description -->
+              <p class="text-xs sm:text-sm font-medium text-slate-600 max-w-[280px] leading-relaxed mx-auto mt-1">
+                ${currentItem.audioDesc || ''}
+              </p>
+
+              <!-- Subtle swipe hint -->
+              <div class="mt-3 flex items-center justify-center gap-1.5 text-[11px] font-bold text-slate-600 select-none">
+                <i class="fa-solid fa-hand-pointer animate-pulse text-[10px]"></i>
+                <span>Swipe left/right or tap to listen</span>
+              </div>
+            </div>
+
+            <!-- Bottom Navigation Bar (Clean Previous / Next) -->
+            <div class="z-10 pt-2 shrink-0">
+              <div class="flex items-center justify-between gap-3">
+                <button onclick="prevDeckCard()" class="flex-1 py-3 bg-white text-slate-700 font-bold text-xs rounded-2xl border-2 border-slate-200 flex items-center justify-center gap-2 shadow-xs mobile-touch-bounce">
+                  <i class="fa-solid fa-arrow-left"></i>
+                  <span>Previous</span>
+                </button>
+                <button onclick="nextDeckCard()" class="flex-1 py-3 ${theme.btnPrimary} font-bold text-xs rounded-2xl border-2 flex items-center justify-center gap-2 shadow-sm mobile-touch-bounce">
+                  <span>${fsDeckItemIdx === totalItems - 1 ? 'Finish Set! 🎉' : 'Next Card'}</span>
+                  <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      `;
+      container.innerHTML = html;
+      attachDeckSwipeListeners();
+    }
+
+    /* Open specific category into full-screen view */
+    function openCategoryCards(catIdx) {
+      fsDeckCategoryIdx = catIdx;
+      fsDeckItemIdx = 0;
+      isInsideCardDetail = true;
+      playTone('pop');
+      renderFlashcards(document.getElementById('appViewport'));
+      playDeckItemVoice();
+    }
+
+    /* Return to category menu tiles */
+    function backToCategoriesList() {
+      isInsideCardDetail = false;
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      playTone('pop');
+      
+      // Ensure header and bottom navigation dock reappear
+      const header = document.getElementById('mobileAppHeader');
+      const bottomNav = document.getElementById('mobileBottomNav');
+      if (header) header.classList.remove('hidden');
+      if (bottomNav) bottomNav.classList.remove('hidden');
+
+      renderFlashcards(document.getElementById('appViewport'));
+    }
+
+    /* Touch & Drag swipe recognition for full screen cards */
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+
+    function attachDeckSwipeListeners() {
+      const container = document.getElementById('appViewport');
+      if (!container) return;
+
+      container.ontouchstart = (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+      };
+
+      container.ontouchend = (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        handleSwipeGesture();
+      };
+
+      // Mouse drag fallback for desktop / testing
+      let mouseStartX = 0;
+      let isMouseDown = false;
+      container.onmousedown = (e) => {
+        isMouseDown = true;
+        mouseStartX = e.clientX;
+      };
+      container.onmouseup = (e) => {
+        if (!isMouseDown) return;
+        isMouseDown = false;
+        const diffX = e.clientX - mouseStartX;
+        if (Math.abs(diffX) > 45) {
+          if (diffX < 0) nextDeckCard();
+          else prevDeckCard();
+        }
+      };
+    }
+
+    function handleSwipeGesture() {
+      const diffX = touchEndX - touchStartX;
+      const diffY = touchEndY - touchStartY;
+      
+      // Ensure horizontal swipe is dominant and passes threshold
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+        if (diffX < 0) {
+          // Swiped Left -> Move Next
+          nextDeckCard();
+        } else {
+          // Swiped Right -> Move Previous
+          prevDeckCard();
+        }
+      }
+    }
+
+    function selectDeckCategory(idx) {
+      fsDeckCategoryIdx = idx;
+      fsDeckItemIdx = 0;
+      playTone('pop');
+      renderFlashcards(document.getElementById('appViewport'));
+      playDeckItemVoice();
+    }
+
+    function playDeckItemVoice() {
+      const curriculum = CURRICULUM_DATA[currentPhase];
+      if (!curriculum || !curriculum.categories[fsDeckCategoryIdx]) return;
+      const category = curriculum.categories[fsDeckCategoryIdx];
+      const item = category.items[fsDeckItemIdx];
+      if (!item) return;
+
+      playTone('chime');
+
+      // Check if this card belongs to the Tamil curriculum
+      const isTamil = item.tamilVoice || category.id === 'tamil';
+
+      if (isTamil) {
+        // Native Tamil speech synthesis
+        const tamilSentence = `${item.letter}. ${item.audioDesc}`;
+        speakAudio(tamilSentence, 0.68, 1.05, 'ta-IN');
+      } else {
+        // Voice over child-friendly sentence in gentle English at a calm 0.70x rate
+        const text = item.audioDesc || (item.number ? `Number ${item.number}! ${item.word}` : (item.letter ? `${item.letter} for ${item.word}` : item.word || item.shape || ''));
+        speakAudio(text, 0.70, 1.15, 'en-US');
+      }
+
+      const stat = document.getElementById('statCardsExplored');
+      if (stat) stat.innerText = parseInt(stat.innerText) + 1;
+    }
+
+    function nextDeckCard() {
+      const curriculum = CURRICULUM_DATA[currentPhase];
+      if (!curriculum || !curriculum.categories[fsDeckCategoryIdx]) return;
+      const category = curriculum.categories[fsDeckCategoryIdx];
+      
+      if (fsDeckItemIdx < category.items.length - 1) {
+        fsDeckItemIdx++;
+        playTone('pop');
+      } else {
+        // Wrap to the next category if available, or wrap around to the first card
+        triggerCelebration();
+        if (fsDeckCategoryIdx < curriculum.categories.length - 1) {
+          fsDeckCategoryIdx++;
+          fsDeckItemIdx = 0;
+        } else {
+          fsDeckCategoryIdx = 0;
+          fsDeckItemIdx = 0;
+        }
+      }
+      renderFlashcards(document.getElementById('appViewport'));
+      playDeckItemVoice();
+    }
+
+    function prevDeckCard() {
+      const curriculum = CURRICULUM_DATA[currentPhase];
+      if (!curriculum || !curriculum.categories[fsDeckCategoryIdx]) return;
+      const category = curriculum.categories[fsDeckCategoryIdx];
+
+      if (fsDeckItemIdx > 0) {
+        fsDeckItemIdx--;
+        playTone('pop');
+      } else {
+        // If at the very first card of category, wrap to previous category's end or loop
+        if (fsDeckCategoryIdx > 0) {
+          fsDeckCategoryIdx--;
+          fsDeckItemIdx = curriculum.categories[fsDeckCategoryIdx].items.length - 1;
+        } else {
+          fsDeckCategoryIdx = curriculum.categories.length - 1;
+          fsDeckItemIdx = curriculum.categories[fsDeckCategoryIdx].items.length - 1;
+        }
+        playTone('pop');
+      }
+      renderFlashcards(document.getElementById('appViewport'));
+      playDeckItemVoice();
+    }
+
+    /* ----------------------------------------------------
+       MODULE 2: MOBILE READ-ALONG STORIES (TILES & FULL SCREEN)
+    ---------------------------------------------------- */
+    function renderStories(container) {
+      const theme = THEMES[activeThemeKey] || THEMES.safari;
+      const header = document.getElementById('mobileAppHeader');
+      const bottomNav = document.getElementById('mobileBottomNav');
+
+      // VIEW A: STORIES MENU TILES HUB
+      if (!isInsideStoryDetail) {
+        if (header) header.classList.remove('hidden');
+        if (bottomNav) bottomNav.classList.remove('hidden');
+
+        let html = `
+          <div class="space-y-3 pb-2">
+            <div class="grid grid-cols-2 gap-2.5">
+              ${STORIES_DATABASE.map((story, idx) => `
+                <button onclick="openStoryDetail(${idx})" 
+                        class="kid-card-3d p-3.5 rounded-3xl border-2 ${theme.cardBorder} bg-white flex flex-col items-center text-center transition mobile-touch-bounce shadow-xs">
+                  <div class="text-5xl my-1.5 drop-shadow-sm select-none">${story.coverEmoji}</div>
+                  <div class="text-xs font-bold text-slate-800 line-clamp-1 mt-1">${story.title}</div>
+                  <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-1">${story.theme}</p>
+                  <span class="mt-2 text-[10px] font-bold ${theme.badgeBg} px-2 py-0.5 rounded-full border">
+                    ${story.pages.length} Pages
+                  </span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+        container.innerHTML = html;
+        return;
+      }
+
+      // VIEW B: FULL SCREEN DETAILED STORY READER
+      if (header) header.classList.add('hidden');
+      if (bottomNav) bottomNav.classList.add('hidden');
+
+      const story = STORIES_DATABASE[activeStoryIndex];
+      const page = story.pages[activeStoryPage];
+
+      let html = `
+        <div class="flex flex-col h-full justify-between space-y-2.5 py-1">
+          
+          <!-- Back to Story Books Hub & Title Bar -->
+          <div class="shrink-0 flex items-center justify-between gap-2 px-1">
+            <button onclick="backToStoriesHub()" class="px-3.5 py-2 rounded-2xl text-xs font-bold bg-white text-slate-800 border-2 border-slate-300 flex items-center gap-2 mobile-touch-bounce shadow-sm">
+              <i class="fa-solid fa-arrow-left text-sm text-slate-700"></i>
+              <span>Back</span>
+            </button>
+
+            <span class="text-xs font-bold text-slate-900 bg-white/90 px-3.5 py-1.5 rounded-2xl border ${theme.cardBorder} truncate max-w-[210px] shadow-xs">
+              ${story.coverEmoji} ${story.title}
+            </span>
+          </div>
+
+          <!-- FULL-SCREEN IMMERSIVE STORY CANVAS -->
+          <div class="flex-1 bg-gradient-to-b ${theme.cardGradient} rounded-3xl p-5 border-2 ${theme.cardBorder} shadow-sm flex flex-col justify-between relative overflow-hidden">
+            
+            <!-- Story Header Badge & Page Counter -->
+            <div class="flex items-center justify-between z-10 shrink-0">
+              <div class="inline-flex items-center gap-1.5 bg-white/80 text-slate-700 text-[11px] font-bold px-2.5 py-1 rounded-full border ${theme.cardBorder} shadow-xs">
+                <span>📖</span>
+                <span>${story.theme}</span>
+              </div>
+
+              <span class="text-xs font-bold ${theme.badgeBg} px-3 py-0.5 rounded-full border">
+                Page ${activeStoryPage + 1} of ${story.pages.length}
+              </span>
+            </div>
+
+            <!-- Page Centerpiece -->
+            <div class="my-auto py-3 text-center z-10">
+              <div class="text-7xl sm:text-8xl mb-4 pulse-glow select-none">
+                ${page.illustration}
+              </div>
+
+              <!-- Karaoke Guided Text with Andika Font -->
+              <div class="flex flex-wrap justify-center gap-1.5 px-2 text-lg sm:text-xl font-bold text-slate-800 leading-relaxed">
+                ${page.words.map((w, i) => `
+                  <span id="word-${i}" onclick="speakAudio('${w.replace(/[.,!]/g, '')}')" class="px-1.5 py-0.5 rounded-xl cursor-pointer hover:bg-white/70 transition">
+                    ${w}
+                  </span>
+                `).join('')}
+              </div>
+
+              <!-- Page Dots -->
+              <div class="flex justify-center gap-2 mt-5">
+                ${story.pages.map((_, i) => `
+                  <span onclick="goToStoryPage(${i})" class="w-3 h-3 rounded-full cursor-pointer transition-all ${i === activeStoryPage ? 'scale-125' : 'bg-slate-300/60'}" style="${i === activeStoryPage ? `background-color: ${theme.accentTint};` : ''}"></span>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Bottom Story Controls -->
+            <div class="z-10 pt-2 shrink-0">
+              <div class="flex items-center justify-between gap-2.5">
+                <button onclick="prevStoryPage()" class="mobile-touch-bounce px-3.5 py-3 bg-white text-slate-700 font-bold text-xs rounded-2xl border-2 border-slate-200 flex items-center gap-1 shadow-xs">
+                  <i class="fa-solid fa-arrow-left"></i>
+                  <span>Prev</span>
+                </button>
+
+                <button onclick="readAloudPage()" class="mobile-touch-bounce flex-1 py-3.5 ${theme.btnPrimary} font-bold text-xs sm:text-sm rounded-2xl shadow-md flex items-center justify-center gap-2 border-2">
+                  <i class="fa-solid fa-circle-play text-base"></i> 
+                  <span>Read Out Loud</span>
+                </button>
+
+                <button onclick="nextStoryPage()" class="mobile-touch-bounce px-3.5 py-3 bg-white text-slate-700 font-bold text-xs rounded-2xl border-2 border-slate-200 flex items-center gap-1 shadow-xs">
+                  <span>${activeStoryPage === story.pages.length - 1 ? 'Finish 🎉' : 'Next'}</span>
+                  <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              </div>
+
+              <div class="mt-2.5 text-center text-xs text-slate-800 font-bold bg-white/80 p-2 rounded-xl border ${theme.cardBorder}">
+                ✨ ${story.moral}
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      `;
+      container.innerHTML = html;
+    }
+
+    function openStoryDetail(idx) {
+      activeStoryIndex = idx;
+      activeStoryPage = 0;
+      isInsideStoryDetail = true;
+      playTone('pop');
+      renderStories(document.getElementById('appViewport'));
+      readAloudPage();
+    }
+
+    function backToStoriesHub() {
+      isInsideStoryDetail = false;
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      playTone('pop');
+      renderStories(document.getElementById('appViewport'));
+    }
+
+    function nextStoryPage() {
+      const story = STORIES_DATABASE[activeStoryIndex];
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+
+      if (activeStoryPage < story.pages.length - 1) {
+        activeStoryPage++;
+        playTone('chime');
+      } else {
+        // Move to the next story if available, else loop back to story 1
+        triggerCelebration();
+        activeStoryIndex = (activeStoryIndex + 1) % STORIES_DATABASE.length;
+        activeStoryPage = 0;
+      }
+      renderStories(document.getElementById('appViewport'));
+    }
+
+    function prevStoryPage() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+
+      if (activeStoryPage > 0) {
+        activeStoryPage--;
+        playTone('pop');
+      } else {
+        // Wrap to the previous story's last page
+        activeStoryIndex = (activeStoryIndex - 1 + STORIES_DATABASE.length) % STORIES_DATABASE.length;
+        activeStoryPage = STORIES_DATABASE[activeStoryIndex].pages.length - 1;
+        playTone('pop');
+      }
+      renderStories(document.getElementById('appViewport'));
+    }
+
+    function readAloudPage() {
+      const story = STORIES_DATABASE[activeStoryIndex];
+      const page = story.pages[activeStoryPage];
+      playTone('chime');
+
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const ut = new SpeechSynthesisUtterance(page.sentence);
+      ut.rate = 0.72; // Calibrated slow reading speed for kids following word-by-word
+      ut.pitch = 1.15;
+      if (preferredFemaleVoice) ut.voice = preferredFemaleVoice;
+
+      ut.onboundary = function(e) {
+        if (e.name === 'word') {
+          const charIdx = e.charIndex;
+          let running = 0;
+          let matched = 0;
+          for (let i = 0; i < page.words.length; i++) {
+            if (running >= charIdx) {
+              matched = i;
+              break;
+            }
+            running += page.words[i].length + 1;
+          }
+          page.words.forEach((_, idx) => {
+            const el = document.getElementById(`word-${idx}`);
+            if (el) {
+              if (idx === matched) {
+                el.className = "px-1.5 py-0.5 rounded-lg bg-amber-300 text-amber-950 font-bold scale-105 shadow-sm transition-all";
+              } else {
+                el.className = "px-1.5 py-0.5 rounded-lg text-slate-800";
+              }
+            }
+          });
+        }
+      };
+
+      ut.onend = function() {
+        page.words.forEach((_, idx) => {
+          const el = document.getElementById(`word-${idx}`);
+          if (el) el.className = "px-1.5 py-0.5 rounded-lg text-slate-800";
+        });
+      };
+
+      window.speechSynthesis.speak(ut);
+    }
+
+    /* ----------------------------------------------------
+       MODULE 3: MOBILE GAMES & QUIZZES (TILES & FULL SCREEN)
+    ---------------------------------------------------- */
+    function renderGames(container) {
+      const theme = THEMES[activeThemeKey] || THEMES.safari;
+      const header = document.getElementById('mobileAppHeader');
+      const bottomNav = document.getElementById('mobileBottomNav');
+
+      // VIEW A: GAMES MENU TILES HUB
+      if (!isInsideGameDetail) {
+        if (header) header.classList.remove('hidden');
+        if (bottomNav) bottomNav.classList.remove('hidden');
+
+        let html = `
+          <div class="space-y-3 pb-2">
+            <div class="grid grid-cols-2 gap-2.5">
+              
+              <!-- Tile 1: Discovery Quiz -->
+              <button onclick="openGameDetail('quiz')" 
+                      class="kid-card-3d p-3.5 rounded-3xl border-2 ${theme.cardBorder} bg-white flex flex-col items-center text-center transition mobile-touch-bounce shadow-xs">
+                <div class="text-5xl my-1.5 drop-shadow-sm select-none">🎯</div>
+                <div class="text-xs font-bold text-slate-800 line-clamp-1 mt-1">Discovery Quiz</div>
+                <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-1">Guess sounds & shapes</p>
+                <span class="mt-2 text-[10px] font-bold ${theme.badgeBg} px-2 py-0.5 rounded-full border">
+                  ${QUIZ_QUESTIONS.length} Questions
+                </span>
+              </button>
+
+              <!-- Tile 2: Balloon Letter Pop -->
+              <button onclick="openGameDetail('balloon')" 
+                      class="kid-card-3d p-3.5 rounded-3xl border-2 ${theme.cardBorder} bg-white flex flex-col items-center text-center transition mobile-touch-bounce shadow-xs">
+                <div class="text-5xl my-1.5 drop-shadow-sm select-none">🎈</div>
+                <div class="text-xs font-bold text-slate-800 line-clamp-1 mt-1">Balloon Letter Pop</div>
+                <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-1">Sensory letter popping</p>
+                <span class="mt-2 text-[10px] font-bold ${theme.badgeBg} px-2 py-0.5 rounded-full border">
+                  Phonics Fun
+                </span>
+              </button>
+
+            </div>
+          </div>
+        `;
+        container.innerHTML = html;
+        return;
+      }
+
+      // VIEW B: FULL SCREEN GAME CANVAS
+      if (header) header.classList.add('hidden');
+      if (bottomNav) bottomNav.classList.add('hidden');
+
+      const q = QUIZ_QUESTIONS[activeQuizIndex];
+
+      let html = `
+        <div class="flex flex-col h-full justify-between space-y-2.5 py-1">
+          
+          <!-- Back Button & Game Header -->
+          <div class="shrink-0 flex items-center justify-between gap-2 px-1">
+            <button onclick="backToGamesHub()" class="px-3.5 py-2 rounded-2xl text-xs font-bold bg-white text-slate-800 border-2 border-slate-300 flex items-center gap-2 mobile-touch-bounce shadow-sm">
+              <i class="fa-solid fa-arrow-left text-sm text-slate-700"></i>
+              <span>Back</span>
+            </button>
+
+            <span class="text-xs font-bold text-slate-900 bg-white/90 px-3.5 py-1.5 rounded-2xl border ${theme.cardBorder} truncate max-w-[210px] shadow-xs">
+              ${activeGameType === 'quiz' ? '🎯 Discovery Quiz' : '🎈 Balloon Letter Pop'}
+            </span>
+          </div>
+
+          <!-- FULL-SCREEN GAME CANVAS -->
+          <div class="flex-1 bg-gradient-to-b ${theme.cardGradient} rounded-3xl p-5 border-2 ${theme.cardBorder} shadow-sm flex flex-col justify-between relative overflow-hidden">
+            
+            ${activeGameType === 'quiz' ? `
+              <!-- QUIZ GAME SCREEN -->
+              <div class="flex items-center justify-between mb-2">
+                <button onclick="prevQuizQuestion()" class="text-xs bg-white border border-slate-200 px-3 py-1.5 rounded-xl text-slate-700 font-bold mobile-touch-bounce shadow-xs">
+                  <i class="fa-solid fa-chevron-left mr-1"></i> Prev
+                </button>
+                
+                <span class="text-xs font-bold px-3 py-0.5 ${theme.badgeBg} rounded-full border">
+                  Question ${activeQuizIndex + 1} of ${QUIZ_QUESTIONS.length}
+                </span>
+
+                <button onclick="nextQuizQuestion()" class="text-xs bg-white border border-slate-200 px-3 py-1.5 rounded-xl text-slate-700 font-bold mobile-touch-bounce shadow-xs">
+                  Next <i class="fa-solid fa-chevron-right ml-1"></i>
+                </button>
+              </div>
+
+              <div class="my-auto py-2 text-center">
+                <div class="flex items-center justify-center gap-2 mb-4">
+                  <h3 class="text-lg sm:text-xl font-bold text-slate-800">${q.question}</h3>
+                  <button onclick="speakAudio('${q.question}')" class="text-sm bg-white text-slate-700 p-2 rounded-full border border-slate-200 mobile-touch-bounce shadow-xs" title="Listen question">
+                    🔊
+                  </button>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2.5 my-4">
+                  ${q.options.map(opt => `
+                    <button onclick="handleAnswer(${opt.correct}, this)" 
+                            class="kid-card-3d p-4 bg-white hover:bg-slate-50 border-2 ${theme.cardBorder} rounded-3xl flex flex-col items-center shadow-xs">
+                      <span class="text-5xl my-1 select-none">${opt.icon}</span>
+                      <span class="text-xs font-bold text-slate-700 mt-1">${opt.label}</span>
+                    </button>
+                  `).join('')}
+                </div>
+
+                <div id="quizStatusMsg" class="h-6 text-xs font-bold mt-2"></div>
+              </div>
+
+              <!-- Quick Helper Tip -->
+              <p class="text-[11px] text-center text-slate-500 font-medium">
+                ⭐ Tap the best matching picture to earn stars!
+              </p>
+            ` : `
+              <!-- BALLOON LETTER POP SCREEN -->
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold ${theme.badgeBg} px-3 py-1 rounded-full border">
+                  🎈 Sensory Letter Popping
+                </span>
+                <span class="text-[11px] font-bold text-slate-600">Pop to hear sounds</span>
+              </div>
+
+              <div class="my-auto py-4 text-center">
+                <h3 class="text-base font-bold text-slate-800 mb-1">Pop the Balloons!</h3>
+                <p class="text-xs text-slate-500 mb-6">Tap any balloon to hear its letter & phonetic sound</p>
+
+                <div class="flex justify-between items-end py-6 px-1">
+                  ${[
+                    { l: 'A', p: 'ah', color: 'bg-rose-400' },
+                    { l: 'B', p: 'buh', color: 'bg-sky-400' },
+                    { l: 'C', p: 'kuh', color: 'bg-amber-400' },
+                    { l: 'D', p: 'duh', color: 'bg-emerald-400' },
+                    { l: 'E', p: 'eh', color: 'bg-purple-400' }
+                  ].map(item => `
+                    <div onclick="tapBalloon('${item.l}', '${item.p}', this)" class="cursor-pointer flex flex-col items-center transition transform active:scale-125">
+                      <div class="w-14 h-20 rounded-full ${item.color} text-white font-black text-2xl flex items-center justify-center shadow-md border-2 border-white/80">
+                        ${item.l}
+                      </div>
+                      <div class="w-0.5 h-8 bg-slate-300"></div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <button onclick="triggerCelebration()" class="w-full py-3 ${theme.btnPrimary} font-bold text-xs rounded-2xl border-2 flex items-center justify-center gap-2 shadow-sm mobile-touch-bounce">
+                <span>Pop All Balloons! 🎉</span>
+              </button>
+            `}
+
+          </div>
+
+        </div>
+      `;
+      container.innerHTML = html;
+    }
+
+    function openGameDetail(gameType) {
+      activeGameType = gameType;
+      isInsideGameDetail = true;
+      playTone('pop');
+      renderGames(document.getElementById('appViewport'));
+    }
+
+    function backToGamesHub() {
+      isInsideGameDetail = false;
+      playTone('pop');
+      renderGames(document.getElementById('appViewport'));
+    }
+
+    function prevQuizQuestion() {
+      activeQuizIndex = (activeQuizIndex - 1 + QUIZ_QUESTIONS.length) % QUIZ_QUESTIONS.length;
+      playTone('pop');
+      renderGames(document.getElementById('appViewport'));
+    }
+
+    function nextQuizQuestion() {
+      activeQuizIndex = (activeQuizIndex + 1) % QUIZ_QUESTIONS.length;
+      playTone('pop');
+      renderGames(document.getElementById('appViewport'));
+    }
+
+    function handleAnswer(isCorrect, btn) {
+      const statusMsg = document.getElementById('quizStatusMsg');
+      if (isCorrect) {
+        btn.classList.add('ring-4', 'ring-emerald-400', 'bg-emerald-50');
+        if (statusMsg) {
+          statusMsg.className = "h-6 text-xs font-bold mt-2 text-emerald-600";
+          statusMsg.innerText = "Super job! That's correct! ⭐";
+        }
+        triggerCelebration();
+        speakAudio("Super job! That's right!");
+        setTimeout(() => {
+          nextQuizQuestion();
+        }, 1200);
+      } else {
+        btn.classList.add('ring-4', 'ring-rose-400', 'bg-rose-50');
+        playTone('pop');
+        if (statusMsg) {
+          statusMsg.className = "h-6 text-xs font-bold mt-2 text-rose-500";
+          statusMsg.innerText = "Almost! Let's try again! 💫";
+        }
+        speakAudio("Good try! Tap another one!");
+        setTimeout(() => {
+          btn.classList.remove('ring-4', 'ring-rose-400', 'bg-rose-50');
+        }, 800);
+      }
+    }
+
+    function tapBalloon(letter, sound, element) {
+      playTone('pop');
+      speakAudio(`${letter}! Sound is ${sound}`);
+      element.style.transform = "scale(1.2)";
+      setTimeout(() => element.style.transform = "scale(1)", 150);
+    }
+
+    /* ----------------------------------------------------
+       MODULE 6: MOBILE GOOD HABITS
+    ---------------------------------------------------- */
+    function renderHabits(container) {
+      let html = `
+        <div class="bg-white rounded-3xl p-4 border-2 border-amber-200/80 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-bold text-slate-800">🌟 Daily Routine Star Habits</h3>
+            <span class="text-xs bg-amber-100 text-amber-900 font-bold px-2.5 py-0.5 rounded-full border border-amber-300">+5 Stars</span>
+          </div>
+
+          <div class="space-y-2.5">
+            ${DAILY_HABITS.map(h => `
+              <div class="p-3 rounded-2xl border-2 ${h.done ? 'bg-emerald-50 border-emerald-300' : 'bg-slate-50 border-slate-200'} flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="text-3xl">${h.icon}</span>
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-800 ${h.done ? 'line-through text-slate-400' : ''}">${h.name}</h4>
+                    <span class="text-[11px] text-slate-400">${h.tip}</span>
+                  </div>
+                </div>
+
+                <button onclick="toggleHabit('${h.id}')" class="mobile-touch-bounce px-3.5 py-1.5 rounded-xl text-xs font-bold ${h.done ? 'bg-emerald-500 text-white' : 'bg-brandYellow text-amber-950 border border-amber-400'}">
+                  ${h.done ? 'Done ✓' : 'Do It!'}
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      container.innerHTML = html;
+    }
+
+    function toggleHabit(id) {
+      const item = DAILY_HABITS.find(x => x.id === id);
+      if (item) {
+        item.done = !item.done;
+        if (item.done) {
+          triggerCelebration();
+          speakAudio(`Super job! You finished ${item.name}!`);
+        } else {
+          playTone('pop');
+        }
+        renderHabits(document.getElementById('appViewport'));
+      }
+    }
+
+    /* ----------------------------------------------------
+       PARENT GATE & CLOCK WATCHER
+    ---------------------------------------------------- */
+    let mathGateAns = 13;
+
+    function requestParentAccess() {
+      playTone('pop');
+      const n1 = Math.floor(Math.random() * 8) + 4;
+      const n2 = Math.floor(Math.random() * 6) + 3;
+      mathGateAns = n1 + n2;
+      document.getElementById('parentMathChallenge').innerText = `${n1} + ${n2} = ?`;
+      document.getElementById('parentMathAnswer').value = '';
+      document.getElementById('parentGateError').classList.add('hidden');
+      document.getElementById('parentLockModal').classList.remove('hidden');
+    }
+
+    function closeParentModal() {
+      document.getElementById('parentLockModal').classList.add('hidden');
+    }
+
+    function verifyParentPin() {
+      const val = parseInt(document.getElementById('parentMathAnswer').value);
+      if (val === mathGateAns) {
+        closeParentModal();
+        document.getElementById('parentDashboardModal').classList.remove('hidden');
+      } else {
+        document.getElementById('parentGateError').classList.remove('hidden');
+        playTone('pop');
+      }
+    }
+
+    function closeParentDashboard() {
+      document.getElementById('parentDashboardModal').classList.add('hidden');
+    }
+
+    function switchParentTab(t) {
+      ['curriculum', 'themes', 'screentime', 'insights'].forEach(tab => {
+        document.getElementById(`parentView-${tab}`).classList.add('hidden');
+        document.getElementById(`pTab-${tab}`).className = "text-slate-400 pb-1.5 flex-1";
+      });
+      document.getElementById(`parentView-${t}`).classList.remove('hidden');
+      document.getElementById(`pTab-${t}`).className = "text-indigo-600 border-b-2 border-indigo-600 pb-1.5 flex-1";
+    }
+
+    /* Screen-Time Governor */
+    let timerMins = 15;
+    let secElapsed = 0;
+
+    function initScreenGovernor() {
+      setInterval(() => {
+        secElapsed++;
+        if (timerMins > 0 && secElapsed >= timerMins * 60) {
+          showRestBreak();
+          secElapsed = 0;
+        }
+      }, 1000);
+    }
+
+    function updateScreenTimer(val) {
+      timerMins = parseInt(val);
+      secElapsed = 0;
+    }
+
+    function showRestBreak() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      const overlay = document.getElementById('restBreakOverlay');
+      overlay.classList.remove('hidden');
+
+      let left = 20;
+      const cnt = document.getElementById('breakCountdown');
+      const btn = document.getElementById('dismissBreakBtn');
+      btn.classList.add('opacity-50', 'cursor-not-allowed');
+      btn.disabled = true;
+
+      const inter = setInterval(() => {
+        left--;
+        cnt.innerText = left;
+        if (left <= 0) {
+          clearInterval(inter);
+          btn.classList.remove('opacity-50', 'cursor-not-allowed');
+          btn.disabled = false;
+        }
+      }, 1000);
+    }
+
+    function dismissRestBreak() {
+      document.getElementById('restBreakOverlay').classList.add('hidden');
+      playTone('chime');
+    }
+
+    /* Avatar modal */
+    function openAvatarSelector() {
+      playTone('pop');
+      document.getElementById('avatarModal').classList.remove('hidden');
+    }
+
+    function selectAvatar(emoji) {
+      kidAvatar = emoji;
+      playTone('chime');
+      document.getElementById('currentAvatarDisplay').innerText = emoji;
+    }
+
+    function saveKidProfile() {
+      const name = document.getElementById('customKidNameInput').value.trim();
+      if (name) {
+        kidName = name;
+        document.getElementById('kidNameTag').innerText = kidName;
+      }
+      document.getElementById('avatarModal').classList.add('hidden');
+      playTone('fanfare');
+    }
+
+    /* Update status bar clock */
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      let mins = now.getMinutes();
+      mins = mins < 10 ? '0' + mins : mins;
+      const el = document.getElementById('mobileStatusBarClock');
+      if (el) el.innerText = `${hours}:${mins}`;
+    }
+
+    /* ----------------------------------------------------
+       INITIALIZE
+    ---------------------------------------------------- */
+    window.onload = function() {
+      initSpeechVoices();
+      renderView();
+      renderThemeGrid();
+      initScreenGovernor();
+      updateClock();
+      setInterval(updateClock, 30000);
+
+      // Close age dropdown when clicking outside
+      document.addEventListener('click', function(e) {
+        const btn = document.getElementById('ageFilterBtn');
+        const dd = document.getElementById('ageFilterDropdown');
+        if (btn && dd && !btn.contains(e.target) && !dd.contains(e.target)) {
+          dd.classList.add('hidden');
+          const chevron = document.getElementById('ageDropdownChevron');
+          if (chevron) chevron.classList.remove('rotate-180');
+        }
+      });
+    };
+  </script>
+</body>
+</html>

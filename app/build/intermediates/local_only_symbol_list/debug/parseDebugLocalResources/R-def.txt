@@ -1,0 +1,8 @@
+R_DEF: Internal format may change without notice
+local
+drawable arun_avatar
+drawable arunesh_avatar
+drawable arunesh_fullavatar
+drawable rose_avatar
+drawable teju_avatar
+style Theme.WonderPlayAcademy
