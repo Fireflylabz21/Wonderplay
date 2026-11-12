@@ -89,11 +89,11 @@ object CurriculumRepository {
                     id = "preschool_alpha",
                     name = "Alphabet & Phonics",
                     items = listOf(
-                        FlashcardItem("A / a", "Apple", "æ - /æ/", "🍎", "A is for Apple, sound /æ/."),
-                        FlashcardItem("B / b", "Ball", "b - /b/", "⚽", "B is for Ball, sound /b/."),
-                        FlashcardItem("C / c", "Cat", "k - /k/", "🐱", "C is for Cat, sound /k/."),
-                        FlashcardItem("D / d", "Dog", "d - /d/", "🐶", "D is for Dog, sound /d/."),
-                        FlashcardItem("E / e", "Elephant", "e - /ɛ/", "🐘", "E is for Elephant, sound /ɛ/.")
+                        FlashcardItem("A / a", "Apple", "æ - /æ/", "🍎", "A  for Apple, sound /æ/."),
+                        FlashcardItem("B / b", "Ball", "b - /b/", "⚽", "B  for Ball, sound /b/."),
+                        FlashcardItem("C / c", "Cat", "k - /k/", "🐱", "C  for Cat, sound /k/."),
+                        FlashcardItem("D / d", "Dog", "d - /d/", "🐶", "D  for Dog, sound /d/."),
+                        FlashcardItem("E / e", "Elephant", "e - /ɛ/", "🐘", "E  for Elephant, sound /ɛ/.")
                     )
                 ),
                 CurriculumCategory(
